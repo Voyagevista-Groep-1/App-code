@@ -1,0 +1,137 @@
+@page "/admin/roles"
+@layout AdminLayout
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
+@using Microsoft.EntityFrameworkCore
+@using tui.Data
+@using tui.Models
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+
+<PageTitle>Rollen</PageTitle>
+
+<h2>Rol aanmaken</h2>
+<input @bind="newRoleName" />
+<button @onclick="CreateRole">Aanmaken</button>
+<p>@createMessage</p>
+
+<h2>Rollen</h2>
+<ul>
+    @foreach (var role in roles)
+    {
+        <li>@role.Name (Id: @role.Id)</li>
+    }
+</ul>
+
+<h2>Rol toewijzen aan gebruiker</h2>
+<div>
+    Gebruiker:
+    <select @bind="selectedUserId">
+        <option value="0">-- selecteer gebruiker --</option>
+        @foreach (var u in users)
+        {
+            <option value="@u.UserId">@u.Email (@u.FirstName @u.LastName)</option>
+        }
+    </select>
+</div>
+<div>
+    Rol:
+    <select @bind="selectedRoleId">
+        <option value="0">-- selecteer rol --</option>
+        @foreach (var r in roles)
+        {
+            <option value="@r.Id">@r.Name</option>
+        }
+    </select>
+</div>
+<button @onclick="AssignRole">Toewijzen</button>
+<p>@assignMessage</p>
+
+<h2>Gebruikersrollen</h2>
+<table>
+    <thead>
+        <tr><th>Gebruiker</th><th>Rollen</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var u in usersWithRoles)
+        {
+            <tr>
+                <td>@u.Email</td>
+                <td>
+                    @string.Join(", ", u.UserRoles.Select(ur => ur.Role.Name))
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private string newRoleName = string.Empty;
+    private string createMessage = string.Empty;
+    private string assignMessage = string.Empty;
+
+    private List<Role> roles = new();
+    private List<AppUser> users = new();
+    private List<AppUser> usersWithRoles = new();
+
+    private int selectedUserId;
+    private int selectedRoleId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        roles = await db.Roles.OrderBy(r => r.Name).ToListAsync();
+        users = await db.AppUsers.OrderBy(u => u.Email).ToListAsync();
+        usersWithRoles = await db.AppUsers
+        .Include(u => u.UserRoles)
+        .ThenInclude(ur => ur.Role)
+        .OrderBy(u => u.Email)
+        .ToListAsync();
+    }
+
+    private async Task CreateRole()
+    {
+        if (string.IsNullOrWhiteSpace(newRoleName))
+        {
+            createMessage = "Voer een rolnaam in";
+            return;
+        }
+
+        await using var db = await DbFactory.CreateDbContextAsync();
+        var name = newRoleName.Trim();
+        if (await db.Roles.AnyAsync(r => r.Name == name))
+        {
+            createMessage = "Rol bestaat al";
+            return;
+        }
+        db.Roles.Add(new Role { Name = name });
+        await db.SaveChangesAsync();
+        newRoleName = string.Empty;
+        createMessage = "Aangemaakt";
+        await LoadData();
+    }
+
+    private async Task AssignRole()
+    {
+        if (selectedUserId == 0 || selectedRoleId == 0)
+        {
+            assignMessage = "Selecteer een gebruiker en een rol";
+            return;
+        }
+
+        await using var db = await DbFactory.CreateDbContextAsync();
+        var exists = await db.UserRoles.AnyAsync(ur => ur.UserId == selectedUserId && ur.RoleId == selectedRoleId);
+        if (exists)
+        {
+            assignMessage = "Al toegewezen";
+            return;
+        }
+        db.UserRoles.Add(new UserRole { UserId = selectedUserId, RoleId = selectedRoleId });
+        await db.SaveChangesAsync();
+        assignMessage = "Toegewezen";
+        await LoadData();
+    }
+}
