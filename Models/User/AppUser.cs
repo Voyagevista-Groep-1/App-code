@@ -19,12 +19,10 @@ public class AppUser
     [MaxLength(255)]
     public string PasswordHash { get; set; } = string.Empty;
 
-    [MaxLength(20)]
-    public string UserRole { get; set; } = string.Empty;
-
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // Navigation properties
     public Client? Client { get; set; }
     public ICollection<ComplaintTicket> AssignedTickets { get; set; } = [];
+    public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

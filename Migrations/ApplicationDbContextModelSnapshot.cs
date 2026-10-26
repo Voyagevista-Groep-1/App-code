@@ -102,11 +102,6 @@ namespace tui.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("UserRole")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
                     b.HasKey("UserId");
 
                     b.HasIndex("Email")
@@ -637,6 +632,23 @@ namespace tui.Migrations
                     b.ToTable("Payments");
                 });
 
+            modelBuilder.Entity("tui.Models.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("tui.Models.SLA", b =>
                 {
                     b.Property<int>("SLAId")
@@ -1058,6 +1070,29 @@ namespace tui.Migrations
                     b.ToTable("TripPlannings");
                 });
 
+            modelBuilder.Entity("tui.Models.UserRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserRoles");
+                });
+
             modelBuilder.Entity("tui.Models.Booking", b =>
                 {
                     b.HasOne("tui.Models.Client", "Client")
@@ -1440,6 +1475,25 @@ namespace tui.Migrations
                     b.Navigation("TripGuide");
                 });
 
+            modelBuilder.Entity("tui.Models.UserRole", b =>
+                {
+                    b.HasOne("tui.Models.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("tui.Models.AppUser", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("tui.Models.Account", b =>
                 {
                     b.Navigation("InvoiceLines");
@@ -1457,6 +1511,8 @@ namespace tui.Migrations
                     b.Navigation("AssignedTickets");
 
                     b.Navigation("Client");
+
+                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("tui.Models.Booking", b =>
@@ -1522,6 +1578,11 @@ namespace tui.Migrations
             modelBuilder.Entity("tui.Models.Party", b =>
                 {
                     b.Navigation("Invoices");
+                });
+
+            modelBuilder.Entity("tui.Models.Role", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("tui.Models.SLA", b =>

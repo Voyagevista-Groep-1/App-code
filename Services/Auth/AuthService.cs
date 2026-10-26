@@ -41,7 +41,10 @@ public class AuthService(
         await using var db = await dbFactory.CreateDbContextAsync();
         email = email.Trim().ToUpperInvariant();
 
-        var user = await db.AppUsers.SingleOrDefaultAsync(u => u.Email == email);
+        var user = await db.AppUsers
+            .Include(u => u.UserRoles)
+            .ThenInclude(ur => ur.Role)
+            .SingleOrDefaultAsync(u => u.Email == email);
 
         if (user is null)
         {
@@ -64,8 +67,12 @@ public class AuthService(
             new(ClaimTypes.Name, $"{user.FirstName} {user.LastName}")
         };
 
-        // TODO: remove this, this is temporary until we have proper roles
-        if (user.Email == AdminEmail)
+        foreach (var userRole in user.UserRoles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, userRole.Role.Name));
+        }
+
+        if (user.Email == AdminEmail && !claims.Any(c => c.Type == ClaimTypes.Role && c.Value == "Admin"))
         {
             claims.Add(new Claim(ClaimTypes.Role, "Admin"));
         }
