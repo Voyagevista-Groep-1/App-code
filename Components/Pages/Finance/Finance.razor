@@ -1,15 +1,9 @@
 @page "/finance"
 @layout MainLayout
-@using System.Security.Claims
-@using Microsoft.AspNetCore.Components.Authorization
-@inject AuthenticationStateProvider AuthStateProvider
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Policy = AccessPolicies.Finance)]
 
 <PageTitle>Finance</PageTitle>
 
 <div class="main">
     Finance
 </div>
-
-@code {
-    
-}

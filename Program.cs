@@ -6,6 +6,7 @@ using tui.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,11 +38,23 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IPasswordHasher<AppUser>, PasswordHasher<AppUser>>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<UserRoleService>();
+builder.Services.AddScoped<IUserSession, UserSession>();
+builder.Services.AddScoped<RoleCookieEvents>();
+builder.Services.AddScoped<AuthenticationStateProvider, RoleAuthenticationStateProvider>();
+builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options => { options.LoginPath = "/auth/login"; });
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/auth/login";
+        options.AccessDeniedPath = "/access-denied";
+        options.EventsType = typeof(RoleCookieEvents);
+        options.ExpireTimeSpan = UserSession.Lifetime;
+        options.SlidingExpiration = false;
+    });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(AccessPolicies.Configure);
 
 var app = builder.Build();
 
@@ -71,5 +84,6 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.MapAuthEndpoints();
+app.MapUserManagementEndpoints();
 
 app.Run();

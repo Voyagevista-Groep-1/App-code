@@ -102,11 +102,6 @@ namespace tui.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("UserRole")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
                     b.HasKey("UserId");
 
                     b.HasIndex("Email")
@@ -637,6 +632,47 @@ namespace tui.Migrations
                     b.ToTable("Payments");
                 });
 
+            modelBuilder.Entity("tui.Models.Role", b =>
+                {
+                    b.Property<string>("Name")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.HasKey("Name");
+
+                    b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Name = "Beheerder"
+                        },
+                        new
+                        {
+                            Name = "Finance"
+                        },
+                        new
+                        {
+                            Name = "Sales"
+                        },
+                        new
+                        {
+                            Name = "Marketing"
+                        },
+                        new
+                        {
+                            Name = "Customerservice"
+                        },
+                        new
+                        {
+                            Name = "Productdevelopment"
+                        },
+                        new
+                        {
+                            Name = "IT"
+                        });
+                });
+
             modelBuilder.Entity("tui.Models.SLA", b =>
                 {
                     b.Property<int>("SLAId")
@@ -1058,6 +1094,22 @@ namespace tui.Migrations
                     b.ToTable("TripPlannings");
                 });
 
+            modelBuilder.Entity("tui.Models.UserRoleAssignment", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RoleName")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.HasKey("UserId", "RoleName");
+
+                    b.HasIndex("RoleName");
+
+                    b.ToTable("UserRoles");
+                });
+
             modelBuilder.Entity("tui.Models.Booking", b =>
                 {
                     b.HasOne("tui.Models.Client", "Client")
@@ -1440,6 +1492,25 @@ namespace tui.Migrations
                     b.Navigation("TripGuide");
                 });
 
+            modelBuilder.Entity("tui.Models.UserRoleAssignment", b =>
+                {
+                    b.HasOne("tui.Models.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleName")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("tui.Models.AppUser", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("tui.Models.Account", b =>
                 {
                     b.Navigation("InvoiceLines");
@@ -1457,6 +1528,8 @@ namespace tui.Migrations
                     b.Navigation("AssignedTickets");
 
                     b.Navigation("Client");
+
+                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("tui.Models.Booking", b =>
@@ -1522,6 +1595,11 @@ namespace tui.Migrations
             modelBuilder.Entity("tui.Models.Party", b =>
                 {
                     b.Navigation("Invoices");
+                });
+
+            modelBuilder.Entity("tui.Models.Role", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("tui.Models.SLA", b =>

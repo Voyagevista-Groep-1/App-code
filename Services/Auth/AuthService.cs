@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
@@ -15,8 +14,6 @@ public class AuthService(
     IHttpContextAccessor httpContextAccessor,
     IPasswordHasher<AppUser> passwordHasher)
 {
-    private const string AdminEmail = "ADMIN@ADMIN.COM";
-
     public async Task<AuthResult> RegisterAsync(string firstname, string lastname, string email, string password)
     {
         await using var db = await dbFactory.CreateDbContextAsync();
@@ -41,7 +38,7 @@ public class AuthService(
         await using var db = await dbFactory.CreateDbContextAsync();
         email = email.Trim().ToUpperInvariant();
 
-        var user = await db.AppUsers.SingleOrDefaultAsync(u => u.Email == email);
+        var user = await db.AppUsers.Include(u => u.UserRoles).SingleOrDefaultAsync(u => u.Email == email);
 
         if (user is null)
         {
@@ -55,27 +52,13 @@ public class AuthService(
             return new AuthResult(false, "Ongeldig e-mailadres of ongeldig wachtwoord.");
         }
 
-        var claims = new List<Claim>
-        {
-            new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-            new(ClaimTypes.Email, user.Email),
-            new(ClaimTypes.GivenName, user.FirstName),
-            new(ClaimTypes.Surname, user.LastName),
-            new(ClaimTypes.Name, $"{user.FirstName} {user.LastName}")
-        };
-
-        // TODO: remove this, this is temporary until we have proper roles
-        if (user.Email == AdminEmail)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, "Admin"));
-        }
-
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var principal = new ClaimsPrincipal(identity);
+        var expires = DateTimeOffset.UtcNow.Add(UserSession.Lifetime);
+        var principal = UserSession.CreatePrincipal(user, expires);
 
         if (httpContextAccessor.HttpContext is { } httpContext)
         {
-            await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
+                new AuthenticationProperties { ExpiresUtc = expires, AllowRefresh = false });
         }
 
         return new AuthResult(true);

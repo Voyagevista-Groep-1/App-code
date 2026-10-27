@@ -1,6 +1,6 @@
 @page "/admin"
 @layout AdminLayout
-@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Policy = AccessPolicies.Administrator)]
 
 <PageTitle>Admin</PageTitle>
 
@@ -22,11 +22,11 @@
     <section class="quick-actions">
         <h2>SNELLE ACTIES</h2>
         <div>
-            <button>Nieuwe boeking</button>
-            <button>Nieuwe campagne</button>
-            <button>Supportticket</button>
-            <button>Bestemming toevoegen</button>
-            <button>Rapport genereren</button>
+            <RoleView Policy="@AccessPolicies.Sales"><button>Nieuwe boeking</button></RoleView>
+            <RoleView Policy="@AccessPolicies.Marketing"><button>Nieuwe campagne</button></RoleView>
+            <RoleView Policy="@AccessPolicies.CustomerService"><button>Supportticket</button></RoleView>
+            <RoleView Policy="@AccessPolicies.ProductDevelopment"><button>Bestemming toevoegen</button></RoleView>
+            <RoleView Policy="@AccessPolicies.Finance"><button>Rapport genereren</button></RoleView>
         </div>
     </section>
 

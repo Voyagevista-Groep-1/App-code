@@ -1,9 +1,18 @@
 @page "/"
 @layout MainLayout
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
 
 <PageTitle>Home</PageTitle>
 
 <div class="main">
     <h3>Home</h3>
-    <p>Hello, World!</p>
+    <p>Welkom bij VoyageVista. Via de navigatie open je de onderdelen die bij jouw rollen horen.</p>
+    <AuthorizeView>
+        <Authorized Context="authenticationState">
+            @if (!AccessPolicies.Roles.Any(authenticationState.User.IsInRole))
+            {
+                <p>Er zijn geen afdelingsrollen beschikbaar. Neem contact op met je beheerder als je toegang nodig hebt.</p>
+            }
+        </Authorized>
+    </AuthorizeView>
 </div>

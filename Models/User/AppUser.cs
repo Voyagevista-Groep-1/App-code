@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using tui.Services;
 
 namespace tui.Models;
 
@@ -19,8 +21,16 @@ public class AppUser
     [MaxLength(255)]
     public string PasswordHash { get; set; } = string.Empty;
 
-    [MaxLength(20)]
-    public string UserRole { get; set; } = string.Empty;
+    public ICollection<UserRoleAssignment> UserRoles { get; set; } = [];
+
+    // Compatibility for constructing principals; persisted assignments live in UserRoles.
+    [NotMapped]
+    public string UserRole
+    {
+        get => string.Join(',', UserRoles.Select(assignment => assignment.RoleName));
+        set => UserRoles = AccessPolicies.ParseRoles(value)
+            .Select(role => new UserRoleAssignment { RoleName = role }).ToList();
+    }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

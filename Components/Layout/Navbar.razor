@@ -1,6 +1,6 @@
 <header class="admin-navbar">
     <div class="admin-brand-container">
-        <a class="admin-brand" href="/admin">
+        <a class="admin-brand" href="/">
             <img class="brand-logo" src="images/logo/VoyageVista_Logo.png" alt="VoyageVista logo" />
             <span>
                 <strong>VoyageVista</strong>
@@ -11,20 +11,37 @@
 
     <div class="admin-pages-container">
         <nav class="admin-nav">
-            <a href="/admin">Dashboard</a>
-            <a href="/marketing">Marketing <span class="chevron">⌄</span></a>
-            <a href="/sales">Sales <span class="chevron">⌄</span></a>
-            <a href="/customerservice">Klantenservice <span class="chevron">⌄</span></a>
-            <a href="/productdevelopment">Producten <span class="chevron">⌄</span></a>
-            <a href="/finance">Financiën <span class="chevron">⌄</span></a>
-            <a href="/it">IT &amp; Innovatie</a>
+            <AuthorizeView><Authorized><a href="/">Home</a></Authorized></AuthorizeView>
+            <RoleView Policy="@AccessPolicies.Administrator"><a href="/admin">Dashboard</a></RoleView>
+            <RoleView Policy="@AccessPolicies.Marketing"><a href="/marketing">Marketing <span class="chevron">⌄</span></a></RoleView>
+            <RoleView Policy="@AccessPolicies.Sales"><a href="/sales">Sales <span class="chevron">⌄</span></a></RoleView>
+            <RoleView Policy="@AccessPolicies.CustomerService"><a href="/customerservice">Klantenservice <span class="chevron">⌄</span></a></RoleView>
+            <RoleView Policy="@AccessPolicies.ProductDevelopment"><a href="/productdevelopment">Producten <span class="chevron">⌄</span></a></RoleView>
+            <RoleView Policy="@AccessPolicies.Finance"><a href="/finance">Financiën <span class="chevron">⌄</span></a></RoleView>
+            <RoleView Policy="@AccessPolicies.IT">
+                <details class="nav-dropdown">
+                    <summary>IT &amp; Innovatie <span class="chevron" aria-hidden="true">⌄</span></summary>
+                    <div class="nav-dropdown-items">
+                        <a href="/it">IT-overzicht</a>
+                        <RoleView Policy="@AccessPolicies.Administrator"><a href="/admin/users">Gebruikers</a></RoleView>
+                    </div>
+                </details>
+            </RoleView>
         </nav>
     </div>
 
     <div class="admin-actions-container">
         <div class="admin-actions">
-            <input type="search" placeholder="Zoeken..." aria-label="Zoeken" />
-            <a href="/auth/login">♩<span class="notification-dot"></span></a>
+            <AuthorizeView>
+                <Authorized>
+                    <input type="search" placeholder="Zoeken..." aria-label="Zoeken" />
+                    <form method="post" action="/auth/logout" data-enhance="false">
+                        <AntiforgeryToken />
+                        <button type="submit">Uitloggen</button>
+                    </form>
+                </Authorized>
+                <NotAuthorized><a href="/auth/login">Inloggen</a></NotAuthorized>
+            </AuthorizeView>
         </div>
     </div>
 </header>

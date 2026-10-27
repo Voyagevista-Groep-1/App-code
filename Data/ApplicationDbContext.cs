@@ -1,11 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using tui.Models;
+using tui.Services;
 
 namespace tui.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
     public DbSet<AppUser> AppUsers => Set<AppUser>();
+    public DbSet<Role> Roles => Set<Role>();
+    public DbSet<UserRoleAssignment> UserRoles => Set<UserRoleAssignment>();
     public DbSet<ClientType> ClientTypes => Set<ClientType>();
     public DbSet<Client> Clients => Set<Client>();
     public DbSet<TripGuide> TripGuides => Set<TripGuide>();
@@ -44,6 +47,14 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Role>().HasData(AccessPolicies.Roles.Select(name => new Role { Name = name }));
+        modelBuilder.Entity<UserRoleAssignment>(e =>
+        {
+            e.HasKey(x => new { x.UserId, x.RoleName });
+            e.HasOne(x => x.User).WithMany(x => x.UserRoles).HasForeignKey(x => x.UserId);
+            e.HasOne(x => x.Role).WithMany(x => x.UserRoles).HasForeignKey(x => x.RoleName);
+        });
 
         // ---- Customers ----
         modelBuilder.Entity<AppUser>(e =>

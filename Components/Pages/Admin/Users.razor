@@ -1,0 +1,173 @@
+@page "/admin/users"
+@layout AdminLayout
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Policy = AccessPolicies.Administrator)]
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider Authentication
+
+<PageTitle>Gebruikers en rollen</PageTitle>
+
+<div class="user-management">
+    <header class="page-heading">
+        <div><p class="eyebrow">Beheer</p><h1>Gebruikers en rollen</h1><p>Bepaal welke onderdelen iedere gebruiker mag openen.</p></div>
+        <button type="button" class="secondary" disabled="@Busy" @onclick="LoadAsync">Vernieuwen</button>
+    </header>
+
+    @if (_error is not null) { <p class="message error" role="alert">@_error</p> }
+    @if (_success is not null) { <p class="message success" role="status">@_success</p> }
+
+    <div class="management-grid" aria-busy="@Busy.ToString().ToLowerInvariant()">
+        <section class="panel" aria-labelledby="users-heading">
+            <h2 id="users-heading">Gebruikers</h2>
+            <form class="search" @onsubmit="LoadAsync" @onsubmit:preventDefault>
+                <label for="user-search">Zoeken op e-mailadres</label>
+                <div><input id="user-search" type="search" maxlength="200" @bind="_search" disabled="@Busy" placeholder="Bijvoorbeeld naam@bedrijf.nl" />
+                <button type="submit" disabled="@Busy">Zoeken</button></div>
+            </form>
+            @if (_loading) { <p role="status">Gebruikers laden…</p> }
+            else if (_users.Length == 0) { <p>Geen gebruikers gevonden.</p> }
+            else
+            {
+                <p class="count">@_users.Length gebruiker(s)</p>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th scope="col">E-mailadres</th><th scope="col">Huidige rollen</th><th scope="col">Actie</th></tr></thead>
+                        <tbody>
+                            @foreach (var user in _users)
+                            {
+                                <tr class="@(user.UserId == _selectedUser?.UserId ? "selected" : null)" @key="user.UserId">
+                                    <td>@user.Email</td>
+                                    <td>@if (user.Roles.Length == 0) { <span class="muted">Geen rollen</span> }
+                                        @foreach (var role in user.Roles) { <span class="role-tag">@role</span> }</td>
+                                    <td><button type="button" class="secondary" disabled="@Busy" aria-pressed="@(user.UserId == _selectedUser?.UserId ? "true" : "false")" aria-label="@($"Rollen wijzigen voor {user.Email}")" @onclick="() => Select(user)">Wijzigen</button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </section>
+
+        <section class="panel editor" aria-labelledby="roles-heading">
+            <h2 id="roles-heading">Rollen wijzigen</h2>
+            @if (_selectedUser is null)
+            {
+                <p class="muted">Selecteer een gebruiker uit het overzicht om rollen toe te wijzen of te verwijderen.</p>
+            }
+            else
+            {
+                <p class="selected-email">@_selectedUser.Email</p>
+                <p>Vink de gewenste rollen aan. Zonder rollen heeft deze gebruiker alleen toegang tot algemene onderdelen.</p>
+                <fieldset disabled="@Busy">
+                    <legend>Toegewezen rollen</legend>
+                    @foreach (var role in _roles)
+                    {
+                        <label class="role-option"><input type="checkbox" checked="@_selection.Contains(role)" @onchange="e => Toggle(role, e.Value is true)" /> <span>@role</span></label>
+                    }
+                </fieldset>
+                <p class="muted">Beheerder geeft toegang tot alle afdelingen en gebruikersbeheer.</p>
+                <div class="editor-actions">
+                    <button type="button" disabled="@(Busy || _roles.Length == 0 || _selection.SetEquals(_selectedUser.Roles))" @onclick="SaveAsync">@(_saving ? "Opslaan…" : "Wijzigingen opslaan")</button>
+                    <button type="button" class="secondary" disabled="@Busy" @onclick="() => Select(_selectedUser)">Herstellen</button>
+                </div>
+            }
+        </section>
+    </div>
+</div>
+
+@code {
+    private IJSObjectReference? _api;
+    private ManagedUser[] _users = [];
+    private string[] _roles = [];
+    private ManagedUser? _selectedUser;
+    private HashSet<string> _selection = new(StringComparer.Ordinal);
+    private string _search = "";
+    private string? _error, _success;
+    private bool _loading = true, _saving;
+    private bool Busy => _loading || _saving;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        try
+        {
+            _api = await JS.InvokeAsync<IJSObjectReference>("import", "./Components/Pages/Admin/Users.razor.js");
+            await LoadAsync();
+        }
+        catch (JSException) { _loading = false; _error = "Gebruikersbeheer kon niet worden geladen. Vernieuw de pagina."; }
+        StateHasChanged();
+    }
+
+    private async Task LoadAsync()
+    {
+        if (_api is null) return;
+        _loading = true;
+        _error = _success = null;
+        try
+        {
+            var roles = await _api.InvokeAsync<ApiResponse<string[]>>("getRoles");
+            if (!Accept(roles)) return;
+            var users = await _api.InvokeAsync<ApiResponse<ManagedUser[]>>("getUsers", _search);
+            if (!Accept(users)) return;
+            _roles = roles.Data ?? [];
+            _users = users.Data ?? [];
+            _selectedUser = null;
+            _selection.Clear();
+        }
+        catch (JSException) { _error = "Gebruikers konden niet worden opgehaald. Controleer je verbinding en probeer opnieuw."; }
+        finally { _loading = false; }
+    }
+
+    private void Select(ManagedUser user)
+    {
+        _selectedUser = user;
+        _selection = new(user.Roles, StringComparer.Ordinal);
+        _error = _success = null;
+    }
+
+    private void Toggle(string role, bool selected)
+    {
+        if (selected) _selection.Add(role); else _selection.Remove(role);
+        _success = null;
+    }
+
+    private async Task SaveAsync()
+    {
+        if (_api is null || _selectedUser is null || Busy) return;
+        _saving = true;
+        _error = _success = null;
+        try
+        {
+            var result = await _api.InvokeAsync<ApiResponse<ManagedUser>>("saveRoles", _selectedUser.UserId, _selection.Order().ToArray());
+            if (!Accept(result) || result.Data is null) return;
+            var updated = result.Data;
+            _users = _users.Select(user => user.UserId == updated.UserId ? updated : user).ToArray();
+            Select(updated);
+            _success = $"De rollen van {updated.Email} zijn opgeslagen.";
+            var authentication = await Authentication.GetAuthenticationStateAsync();
+            if (authentication.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == updated.UserId.ToString() &&
+                !updated.Roles.Contains(AccessPolicies.Administrator))
+                Navigation.NavigateTo("/", forceLoad: true);
+        }
+        catch (JSException) { _error = "Opslaan kon niet worden bevestigd. Vernieuw het overzicht om de opgeslagen rollen te controleren."; }
+        finally { _saving = false; }
+    }
+
+    private bool Accept<T>(ApiResponse<T> response)
+    {
+        if (response.Status == 401) { Navigation.NavigateTo("/auth/login", forceLoad: true); return false; }
+        if (response.Status == 403) { Navigation.NavigateTo("/access-denied", forceLoad: true); return false; }
+        if (response.Status is >= 200 and < 300) return true;
+        _error = response.Error ?? "De aanvraag is mislukt. Probeer het opnieuw.";
+        return false;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_api is not null)
+            try { await _api.DisposeAsync(); } catch (JSDisconnectedException) { }
+    }
+
+    public record ApiResponse<T>(int Status, T? Data, string? Error);
+}

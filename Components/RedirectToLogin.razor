@@ -1,0 +1,7 @@
+@inject NavigationManager Navigation
+
+<p role="status">Je wordt doorgestuurd naar de loginpagina…</p>
+
+@code {
+    protected override void OnInitialized() => Navigation.NavigateTo("/auth/login", forceLoad: true);
+}

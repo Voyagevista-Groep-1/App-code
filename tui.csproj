@@ -12,6 +12,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="tui.IntegrationTests/**" />
+    <Content Remove="tui.IntegrationTests/**" />
+    <None Remove="tui.IntegrationTests/**" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>

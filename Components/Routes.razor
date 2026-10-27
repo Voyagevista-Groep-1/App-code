@@ -3,7 +3,19 @@
 <CascadingAuthenticationState>
     <Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Pages.Status.NotFound.NotFound)">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+            <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
+                <NotAuthorized Context="authenticationState">
+                    @if (authenticationState.User.Identity?.IsAuthenticated == true)
+                    {
+                        <tui.Components.Pages.Status.AccessDenied.AccessDenied />
+                    }
+                    else
+                    {
+                        <RedirectToLogin />
+                    }
+                </NotAuthorized>
+                <Authorizing><p role="status">Toegang controleren…</p></Authorizing>
+            </AuthorizeRouteView>
         </Found>
     </Router>
 </CascadingAuthenticationState>

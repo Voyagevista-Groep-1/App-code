@@ -1,0 +1,8 @@
+<AuthorizeView Policy="@Policy">
+    <Authorized>@ChildContent</Authorized>
+</AuthorizeView>
+
+@code {
+    [Parameter, EditorRequired] public string Policy { get; set; } = string.Empty;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}
