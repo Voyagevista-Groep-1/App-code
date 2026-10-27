@@ -11,9 +11,15 @@ public static class AccessPolicies
     public const string CustomerService = "Customerservice";
     public const string ProductDevelopment = "Productdevelopment";
     public const string IT = "IT";
+    public const string InvoiceEmployee = "medewerker";
+    public const string InvoiceController = "controller";
+    public const string InvoiceReadOnly = "read_only";
+    public const string InvoiceWrite = "Invoices.Write";
+    public const string InvoiceReview = "Invoices.Review";
 
     public static readonly string[] Roles =
-        [Administrator, Finance, Sales, Marketing, CustomerService, ProductDevelopment, IT];
+        [Administrator, Finance, Sales, Marketing, CustomerService, ProductDevelopment, IT,
+            InvoiceEmployee, InvoiceController, InvoiceReadOnly];
 
     public static IEnumerable<string> ParseRoles(string? value) =>
         (value ?? "").Split([',', ';'], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
@@ -28,5 +34,10 @@ public static class AccessPolicies
         {
             options.AddPolicy(role, policy => policy.RequireAuthenticatedUser().RequireRole(role, Administrator));
         }
+        options.AddPolicy(Finance, policy => policy.RequireAuthenticatedUser()
+            .RequireRole(Finance, Administrator, InvoiceEmployee, InvoiceController, InvoiceReadOnly));
+        // Segregation of duties: administrators need the explicit operational role too.
+        options.AddPolicy(InvoiceWrite, policy => policy.RequireAuthenticatedUser().RequireRole(InvoiceEmployee));
+        options.AddPolicy(InvoiceReview, policy => policy.RequireAuthenticatedUser().RequireRole(InvoiceController));
     }
 }

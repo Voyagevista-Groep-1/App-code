@@ -39,7 +39,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Account> Accounts => Set<Account>();
     public DbSet<TaxRate> TaxRates => Set<TaxRate>();
     public DbSet<Invoice> Invoices => Set<Invoice>();
+    public DbSet<AuditLogEntry> AuditLog => Set<AuditLogEntry>();
     public DbSet<InvoiceLine> InvoiceLines => Set<InvoiceLine>();
+    public DbSet<ManualInvoiceRegistration> ManualInvoiceRegistrations => Set<ManualInvoiceRegistration>();
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<JournalEntry> JournalEntries => Set<JournalEntry>();
     public DbSet<JournalEntryLine> JournalEntryLines => Set<JournalEntryLine>();
@@ -171,6 +173,17 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             e.HasIndex(x => x.InvoiceNumber).IsUnique();
             e.HasOne(x => x.Party).WithMany(x => x.Invoices).HasForeignKey(x => x.PartyId);
             e.HasOne(x => x.Booking).WithMany(x => x.Invoices).HasForeignKey(x => x.BookingId);
+            e.Property(x => x.Currency).HasDefaultValue("EUR");
+            e.Property(x => x.WorkflowStatus).HasDefaultValue("concept");
+            e.HasOne<AppUser>().WithMany().HasForeignKey(x => x.CreatedByUserId);
+            e.HasOne<AppUser>().WithMany().HasForeignKey(x => x.ReviewedByUserId);
+            e.HasIndex(x => x.WorkflowStatus);
+        });
+
+        modelBuilder.Entity<AuditLogEntry>(e =>
+        {
+            e.HasOne<AppUser>().WithMany().HasForeignKey(x => x.ActorUserId);
+            e.HasIndex(x => new { x.EntityType, x.EntityId, x.OccurredAtUtc });
         });
 
         modelBuilder.Entity<InvoiceLine>(e =>
@@ -178,6 +191,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             e.HasOne(x => x.Invoice).WithMany(x => x.InvoiceLines).HasForeignKey(x => x.InvoiceId);
             e.HasOne(x => x.Account).WithMany(x => x.InvoiceLines).HasForeignKey(x => x.AccountId);
             e.HasOne(x => x.TaxRate).WithMany(x => x.InvoiceLines).HasForeignKey(x => x.TaxRateId);
+            e.HasIndex(x => new { x.InvoiceId, x.Position });
+        });
+
+        modelBuilder.Entity<ManualInvoiceRegistration>(e =>
+        {
+            e.HasOne(x => x.Invoice).WithOne(x => x.ManualRegistration).HasForeignKey<ManualInvoiceRegistration>(x => x.InvoiceId);
+            e.HasIndex(x => new { x.SourceIdentityKey, x.OriginalInvoiceNumber }).IsUnique();
         });
 
         modelBuilder.Entity<Payment>(e =>

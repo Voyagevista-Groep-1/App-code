@@ -17,7 +17,16 @@
             <RoleView Policy="@AccessPolicies.Sales"><a href="/sales">Sales <span class="chevron">⌄</span></a></RoleView>
             <RoleView Policy="@AccessPolicies.CustomerService"><a href="/customerservice">Klantenservice <span class="chevron">⌄</span></a></RoleView>
             <RoleView Policy="@AccessPolicies.ProductDevelopment"><a href="/productdevelopment">Producten <span class="chevron">⌄</span></a></RoleView>
-            <RoleView Policy="@AccessPolicies.Finance"><a href="/finance">Financiën <span class="chevron">⌄</span></a></RoleView>
+            <RoleView Policy="@AccessPolicies.Finance">
+                <details class="nav-dropdown">
+                    <summary>Financiën <span class="chevron" aria-hidden="true">⌄</span></summary>
+                    <div class="nav-dropdown-items">
+                        <a href="/finance">Financiën-overzicht</a>
+                        <a href="/finance/invoices">Facturen</a>
+                        <RoleView Policy="@AccessPolicies.InvoiceWrite"><a href="/finance/invoices/new">Factuur registreren</a></RoleView>
+                    </div>
+                </details>
+            </RoleView>
             <RoleView Policy="@AccessPolicies.IT">
                 <details class="nav-dropdown">
                     <summary>IT &amp; Innovatie <span class="chevron" aria-hidden="true">⌄</span></summary>

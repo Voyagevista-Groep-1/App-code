@@ -87,6 +87,9 @@ public class RoleAccessTests
     [InlineData("Sales", false, true)]
     [InlineData("Finance,Sales", true, true)]
     [InlineData("Beheerder", true, true)]
+    [InlineData("medewerker", true, false)]
+    [InlineData("controller", true, false)]
+    [InlineData("read_only", true, false)]
     [InlineData("", false, false)]
     [InlineData("Unknown", false, false)]
     public async Task Navigation_shows_only_authorized_links(string roles, bool finance, bool sales)
@@ -98,6 +101,7 @@ public class RoleAccessTests
         await using var renderer = new HtmlRenderer(scope.ServiceProvider, scope.ServiceProvider.GetRequiredService<ILoggerFactory>());
         var html = await renderer.Dispatcher.InvokeAsync(async () => (await renderer.RenderComponentAsync<Navbar>()).ToHtmlString());
         Assert.Equal(finance, html.Contains("href=\"/finance\""));
+        Assert.Equal(finance, html.Contains("href=\"/finance/invoices\""));
         Assert.Equal(sales, html.Contains("href=\"/sales\""));
         Assert.Contains("href=\"/\"", html);
         Assert.Contains("Uitloggen", html);

@@ -1,0 +1,163 @@
+@page "/finance/invoices"
+@layout MainLayout
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Policy = AccessPolicies.Finance)]
+@implements IAsyncDisposable
+@using System.Globalization
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+<PageTitle>Facturen</PageTitle>
+
+<div class="invoices-page">
+    <FinanceNavigation CurrentPage="Facturen" />
+    <header class="page-heading">
+        <div>
+            <p class="eyebrow">Financiën</p>
+            <h1>Facturen</h1>
+            <p>Bekijk geregistreerde facturen en vind snel welke nog openstaan.</p>
+        </div>
+        <RoleView Policy="@AccessPolicies.InvoiceWrite">
+            <a class="create-invoice" href="/finance/invoices/new"><span aria-hidden="true">＋</span> Factuur aanmaken</a>
+        </RoleView>
+    </header>
+
+    <section class="invoice-panel" aria-label="Facturenoverzicht">
+        <div class="filters">
+            <div class="search-field">
+                <label for="invoice-search">Zoeken op factuurreferentie of ontvanger</label>
+                <div class="search-controls">
+                    <input id="invoice-search" type="search" maxlength="200" placeholder="Factuurreferentie of naam ontvanger" @bind="_search" @bind:event="oninput" @bind:after="FiltersChangedAsync" />
+                    <button type="button" class="secondary" disabled="@(_search.Length == 0)" @onclick="ClearSearchAsync">Wissen</button>
+                </div>
+            </div>
+            <div class="status-field">
+                <label for="invoice-status">Betaalstatus</label>
+                <select id="invoice-status" @bind="_status" @bind:after="FiltersChangedAsync">
+                    <option value="@InvoiceStatuses.All">Alle</option>
+                    <option value="@InvoiceStatuses.Open">Openstaand</option>
+                    <option value="@InvoiceStatuses.Paid">Betaald</option>
+                </select>
+            </div>
+        </div>
+
+        <div aria-busy="@_loading.ToString().ToLowerInvariant()" aria-live="polite">
+            @if (_loading)
+            {
+                <div class="state-message" role="status"><span class="loading-indicator" aria-hidden="true"></span>Facturen laden…</div>
+            }
+            else if (_error is not null)
+            {
+                <div class="state-message error" role="alert"><p>@_error</p><button type="button" @onclick="LoadAsync">Opnieuw proberen</button></div>
+            }
+            else if (_result is not null && _result.TotalCount == 0)
+            {
+                <div class="state-message">@(_result.TotalInvoices == 0 ? "Er zijn nog geen facturen geregistreerd" : "Geen facturen gevonden")</div>
+            }
+            else if (_result is not null)
+            {
+                <p class="result-count">@FirstResult–@LastResult van @_result.TotalCount facturen</p>
+                <div class="table-container">
+                    <table>
+                        <caption class="visually-hidden">Facturen, gesorteerd op factuurdatum met de nieuwste bovenaan</caption>
+                        <thead><tr>
+                            <th scope="col">Factuurreferentie</th><th scope="col">Ontvanger</th>
+                            <th scope="col" aria-sort="descending">Factuurdatum <span aria-hidden="true">↓</span></th>
+                            <th scope="col" class="amount">Totaalbedrag</th><th scope="col">Betaalstatus</th>
+                        </tr></thead>
+                        <tbody>
+                            @foreach (var invoice in _result.Items)
+                            {
+                                <tr @key="invoice.InvoiceId">
+                                    <td class="reference">@if (invoice.IsManualRegistration) { <a href="@($"/finance/invoices/{invoice.InvoiceId}")">@invoice.Reference</a><br /><small>Bron: @invoice.OriginalInvoiceNumber</small> } else { @invoice.Reference }</td><td>@invoice.Recipient</td>
+                                    <td><time datetime="@invoice.InvoiceDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">@invoice.InvoiceDate.ToString("dd-MM-yyyy", Dutch)</time></td>
+                                    <td class="amount">@invoice.TotalAmount.ToString("#,##0.00##", Dutch) @invoice.Currency</td>
+                                    <td><span class="status-badge @StatusClass(invoice.Status)">@invoice.Status</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <nav class="pagination" aria-label="Factuurpagina's">
+                    <span>Pagina @_result.Page van @_result.TotalPages · maximaal 25 per pagina</span>
+                    <div>
+                        <button type="button" class="secondary" disabled="@(_result.Page <= 1)" @onclick="() => ChangePageAsync(_result.Page - 1)">Vorige</button>
+                        <button type="button" class="secondary" disabled="@(_result.Page >= _result.TotalPages)" @onclick="() => ChangePageAsync(_result.Page + 1)">Volgende</button>
+                    </div>
+                </nav>
+            }
+        </div>
+    </section>
+</div>
+
+@code {
+    private static readonly CultureInfo Dutch = CultureInfo.GetCultureInfo("nl-NL");
+    private IJSObjectReference? _api;
+    private InvoicePage? _result;
+    private string _search = "", _status = InvoiceStatuses.All;
+    private string? _error;
+    private int _page = 1;
+    private long _requestId;
+    private bool _loading = true, _disposed;
+    private int FirstResult => (_result!.Page - 1) * _result.PageSize + 1;
+    private int LastResult => FirstResult + _result!.Items.Length - 1;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await LoadAsync();
+    }
+
+    private Task FiltersChangedAsync() { _page = 1; return LoadAsync(); }
+    private Task ClearSearchAsync() { _search = ""; return FiltersChangedAsync(); }
+    private Task ChangePageAsync(int page) { _page = page; return LoadAsync(); }
+
+    private async Task LoadAsync()
+    {
+        var requestId = ++_requestId;
+        var search = _search;
+        var status = _status;
+        var page = _page;
+        _loading = true;
+        _error = null;
+        StateHasChanged();
+        try
+        {
+            // A short debounce avoids querying for every keystroke. Only the newest response is displayed.
+            await Task.Delay(250);
+            if (_disposed || requestId != _requestId) return;
+            _api ??= await JS.InvokeAsync<IJSObjectReference>("import", "./Components/Pages/Finance/Invoices.razor.js");
+            var response = await _api.InvokeAsync<ApiResponse>("getInvoices", search, status, page);
+            if (_disposed || requestId != _requestId) return;
+            if (response.Status == 401) { Navigation.NavigateTo("/auth/login", forceLoad: true); return; }
+            if (response.Status == 403) { Navigation.NavigateTo("/access-denied", forceLoad: true); return; }
+            if (response.Status != 200 || response.Data is null)
+            {
+                _error = response.Error ?? "De facturen konden niet worden opgehaald. Probeer het opnieuw.";
+                return;
+            }
+            _result = response.Data;
+            _page = _result.Page;
+        }
+        catch (JSException)
+        {
+            if (!_disposed && requestId == _requestId)
+                _error = "De facturen konden niet worden opgehaald. Controleer je verbinding en probeer het opnieuw.";
+        }
+        finally
+        {
+            if (!_disposed && requestId == _requestId) { _loading = false; StateHasChanged(); }
+        }
+    }
+
+    private static string StatusClass(string status) => status.Equals(InvoiceStatuses.Paid, StringComparison.OrdinalIgnoreCase) ? "paid"
+        : status.Equals(InvoiceStatuses.Open, StringComparison.OrdinalIgnoreCase) ? "open" : "";
+
+    public async ValueTask DisposeAsync()
+    {
+        _disposed = true;
+        ++_requestId;
+        if (_api is not null)
+            try { await _api.DisposeAsync(); } catch (JSDisconnectedException) { }
+    }
+
+    public record ApiResponse(int Status, InvoicePage? Data, string? Error);
+}

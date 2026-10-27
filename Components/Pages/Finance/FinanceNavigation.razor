@@ -1,0 +1,21 @@
+<nav class="finance-navigation" aria-label="Financiën navigatie">
+    <NavLink href="/finance" Match="NavLinkMatch.All">Overzicht</NavLink>
+    <NavLink href="/finance/invoices" Match="NavLinkMatch.All">Facturen</NavLink>
+    <RoleView Policy="@AccessPolicies.InvoiceWrite">
+        <NavLink href="/finance/invoices/new" Match="NavLinkMatch.All">Factuur registreren</NavLink>
+    </RoleView>
+</nav>
+@if (!string.IsNullOrWhiteSpace(CurrentPage))
+{
+    <nav class="breadcrumbs" aria-label="Broodkruimelpad">
+        <ol>
+            <li><a href="/finance">Financiën</a></li>
+            @if (CurrentPage != "Facturen") { <li><a href="/finance/invoices">Facturen</a></li> }
+            <li aria-current="page">@CurrentPage</li>
+        </ol>
+    </nav>
+}
+
+@code {
+    [Parameter] public string? CurrentPage { get; set; }
+}

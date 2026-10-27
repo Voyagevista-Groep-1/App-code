@@ -1,0 +1,159 @@
+@page "/finance/invoices/new"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Policy = AccessPolicies.InvoiceWrite)]
+@implements IAsyncDisposable
+@using System.Globalization
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+<PageTitle>Factuur registreren</PageTitle>
+<div class="registration-page">
+    <FinanceNavigation CurrentPage="Factuur registreren" />
+    <header><p><a href="/finance/invoices">← Terug naar facturen</a></p><h1>Factuur handmatig registreren</h1><p>Neem de gegevens en regels van een ontvangen factuur over. Velden met * zijn verplicht.</p></header>
+    @if (_saved is not null)
+    {
+        <p class="success" role="status">De factuur is succesvol opgeslagen met interne referentie <strong>@_saved.InternalReference</strong>.</p>
+        <p><a href="@($"/finance/invoices/{_saved.InvoiceId}")">Opgeslagen factuur opnieuw openen</a> · <button type="button" class="secondary" @onclick="Reset">Nog een factuur registreren</button></p>
+        <ManualInvoiceSummary Invoice="_saved" />
+    }
+    else if (_loading)
+    {
+        <p role="status">Ontvangers laden…</p>
+    }
+    else if (_options is null)
+    {
+        <div role="alert"><p>@_error</p><button @onclick="LoadAsync">Opnieuw proberen</button></div>
+    }
+    else
+    {
+        @if (_error is not null) { <p class="error-banner" role="alert">@_error</p> }
+        @if (_options.Recipients.Length == 0) { <p class="error-banner">Er zijn nog geen ontvangers beschikbaar. Laat eerst een ontvanger registreren via het bestaande beheer.</p> }
+        <EditForm Model="_model" OnValidSubmit="SaveAsync" OnInvalidSubmit="InvalidSubmit" FormName="manual-invoice">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <fieldset class="form-body" disabled="@_saving">
+                <section class="panel"><h2>Ontvanger</h2>
+                    <label for="recipient">Bestaande ontvanger *</label>
+                    <InputSelect id="recipient" @bind-Value="_model.PartyId" @bind-Value:after="Recalculate"><option value="">Selecteer een ontvanger</option>@foreach (var recipient in _options.Recipients) { <option value="@recipient.PartyId">@recipient.Name</option> }</InputSelect>
+                    <ValidationMessage For="() => _model.PartyId" />@Error("partyId")
+                    @if (Recipient is { } selected) { <div class="recipient-preview"><strong>@selected.Name</strong><p>@selected.Address</p><p>Btw-id: @(selected.VatNumber ?? "—")</p></div> }
+                </section>
+                <section class="panel"><h2>Afzender op de bronfactuur</h2><div class="fields">
+                    <div><label for="sender-name">Bedrijfsnaam / juridische naam *</label><InputText id="sender-name" @bind-Value="_model.SenderName" maxlength="150" /><ValidationMessage For="() => _model.SenderName" />@Error("senderName")</div>
+                    <div><label for="sender-address">Volledig adres *</label><InputTextArea id="sender-address" @bind-Value="_model.SenderAddress" maxlength="500" /><ValidationMessage For="() => _model.SenderAddress" />@Error("senderAddress")</div>
+                    <div><label for="sender-kvk">KVK-nummer (indien van toepassing)</label><InputText id="sender-kvk" @bind-Value="_model.SenderKvkNumber" maxlength="30" />@Error("senderKvkNumber")</div>
+                    <div><label for="sender-vat">Btw-identificatienummer @(RequiresReverseCharge ? "*" : "")</label><InputText id="sender-vat" @bind-Value="_model.SenderVatNumber" maxlength="50" />@if (RequiresReverseCharge) { <small>Verplicht bij btw-verlegging. Het btw-id van de ontvanger moet ook in de stamgegevens staan.</small> }@Error("senderVatNumber")</div>
+                </div></section>
+                <section class="panel"><h2>Algemene factuurgegevens</h2><div class="fields">
+                    <div><label for="original-number">Oorspronkelijk factuurnummer *</label><InputText id="original-number" @bind-Value="_model.OriginalInvoiceNumber" maxlength="100" /><ValidationMessage For="() => _model.OriginalInvoiceNumber" />@Error("originalInvoiceNumber")</div>
+                    <div><label for="invoice-date">Factuurdatum *</label><InputDate id="invoice-date" @bind-Value="_model.InvoiceDate" @bind-Value:after="UpdateDueDate" /><ValidationMessage For="() => _model.InvoiceDate" />@Error("invoiceDate")</div>
+                    <div><label for="delivery-date">Leveringsdatum (of vul de periode in)</label><InputDate id="delivery-date" @bind-Value="_model.DeliveryDate" />@Error("deliveryDate")</div>
+                    <div class="period"><label>Leveringsperiode</label><div><InputDate aria-label="Begin leveringsperiode" @bind-Value="_model.DeliveryPeriodStart" /><span>tot</span><InputDate aria-label="Einde leveringsperiode" @bind-Value="_model.DeliveryPeriodEnd" /></div>@Error("deliveryPeriodEnd")</div>
+                    <div><label for="subject">Omschrijving / onderwerp</label><InputText id="subject" @bind-Value="_model.Subject" maxlength="255" />@Error("subject")</div>
+                    <div><label for="payment-reference">Betalingskenmerk / referentie</label><InputText id="payment-reference" @bind-Value="_model.PaymentReference" maxlength="100" />@Error("paymentReference")</div>
+                    <div><label for="payment-term">Betalingstermijn (dagen)</label><InputNumber id="payment-term" @bind-Value="_model.PaymentTermDays" @bind-Value:after="UpdateDueDate" min="0" max="3650" /><ValidationMessage For="() => _model.PaymentTermDays" />@Error("paymentTermDays")</div>
+                    <div><label for="due-date">Vervaldatum</label><InputDate id="due-date" @bind-Value="_model.DueDate" @bind-Value:after="UpdatePaymentTerm" />@Error("dueDate")</div>
+                    <div><label for="currency">Valuta *</label><InputSelect id="currency" @bind-Value="_model.Currency" @bind-Value:after="Recalculate">@foreach (var currency in _options.Currencies) { <option value="@currency">@currency</option> }</InputSelect>@Error("currency")</div>
+                    <div><label for="notes">Aanvullende opmerkingen</label><InputTextArea id="notes" @bind-Value="_model.Notes" maxlength="4000" />@Error("notes")</div>
+                </div></section>
+                <section class="panel"><div class="section-heading"><h2>Factuurregels</h2><button type="button" disabled="@(_model.Lines!.Count >= ManualInvoiceCalculator.MaximumLines)" @onclick="AddLine">Regel toevoegen</button></div>
+                    <p>Prijzen exclusief btw. Gebruik per regel een kortingspercentage óf een kortingsbedrag. Afronding gebeurt per regel op de valutaprecisie.</p>@Error("lines")
+                    @for (var index = 0; index < _model.Lines!.Count; index++)
+                    {
+                        var position = index; var line = _model.Lines[index]; var prefix = $"lines[{index}]";
+                        <fieldset class="invoice-line" @key="line"><legend>Regel @(index + 1)</legend>
+                            <div class="line-actions"><button type="button" class="secondary" aria-label="@($"Regel {index + 1} omhoog")" disabled="@(index == 0)" @onclick="() => MoveLine(position, -1)">↑</button><button type="button" class="secondary" aria-label="@($"Regel {index + 1} omlaag")" disabled="@(index == _model.Lines.Count - 1)" @onclick="() => MoveLine(position, 1)">↓</button><button type="button" class="secondary" @onclick="() => RemoveLine(position)">Verwijderen</button></div>
+                            <div class="fields line-fields">
+                                <div class="wide"><label for="@($"description-{index}")">Omschrijving *</label><InputText id="@($"description-{index}")" @bind-Value="line.Description" @bind-Value:after="Recalculate" maxlength="255" />@Error(prefix + ".description")</div>
+                                <div><label for="@($"quantity-{index}")">Aantal / hoeveelheid *</label><InputNumber id="@($"quantity-{index}")" @bind-Value="line.Quantity" @bind-Value:after="Recalculate" step="any" /><ValidationMessage For="() => line.Quantity" />@Error(prefix + ".quantity")</div>
+                                <div><label for="@($"unit-{index}")">Eenheid</label><InputText id="@($"unit-{index}")" @bind-Value="line.Unit" maxlength="30" />@Error(prefix + ".unit")</div>
+                                <div><label for="@($"price-{index}")">Eenheidsprijs excl. btw *</label><InputNumber id="@($"price-{index}")" @bind-Value="line.UnitPrice" @bind-Value:after="Recalculate" step="any" /><ValidationMessage For="() => line.UnitPrice" />@Error(prefix + ".unitPrice")</div>
+                                <div><label for="@($"discount-percent-{index}")">Korting (%)</label><InputNumber id="@($"discount-percent-{index}")" @bind-Value="line.DiscountPercentage" @bind-Value:after="Recalculate" step="any" /><ValidationMessage For="() => line.DiscountPercentage" />@Error(prefix + ".discountPercentage")</div>
+                                <div><label for="@($"discount-amount-{index}")">Korting (bedrag)</label><InputNumber id="@($"discount-amount-{index}")" @bind-Value="line.DiscountAmount" @bind-Value:after="Recalculate" step="any" /><ValidationMessage For="() => line.DiscountAmount" />@Error(prefix + ".discountAmount")</div>
+                                <div><label for="@($"vat-{index}")">Btw-behandeling *</label><select id="@($"vat-{index}")" value="@VatChoice(line)" @onchange="e => SetVat(line, e.Value?.ToString())"><option value="21">21%</option><option value="9">9%</option><option value="0">0%</option><option value="exempt">Vrijgesteld</option><option value="reverse_charge">Btw verlegd</option></select>@Error(prefix + ".vatTreatment")@Error(prefix + ".vatPercentage")</div>
+                                @if (line.VatTreatment is "exempt" or "reverse_charge") { <div class="wide"><label for="@($"vat-info-{index}")">Grond / informatie op de bronfactuur *</label><InputTextArea id="@($"vat-info-{index}")" @bind-Value="line.VatInformation" @bind-Value:after="Recalculate" maxlength="1000" />@Error(prefix + ".vatInformation")</div> }
+                            </div>
+                            @if (_calculation.Lines.FirstOrDefault(item => item.Position == index + 1) is { } calculated) { <p class="line-amounts">Excl. btw: <strong>@Money(calculated.NetAmount)</strong> · Btw: <strong>@Money(calculated.VatAmount)</strong> · Incl. btw: <strong>@Money(calculated.GrossAmount)</strong></p> }
+                        </fieldset>
+                    }
+                    <p>Maximaal @ManualInvoiceCalculator.MaximumLines regels per factuur.</p>
+                </section>
+                <section class="panel"><ManualInvoiceTotals Calculation="_calculation" Currency="@(_model.Currency ?? "EUR")" />
+                    <div class="source-total"><label for="source-total">Totaal van de bronfactuur (optionele controle)</label><InputNumber id="source-total" @bind-Value="_model.SourceTotalAmount" @bind-Value:after="Recalculate" step="any" /><ValidationMessage For="() => _model.SourceTotalAmount" />@Error("sourceTotalAmount")
+                        @if (_model.SourceTotalAmount is { } source && _calculation.IsValid && source != _calculation.TotalIncludingVat) { <p class="field-error">Bronbedrag en berekend totaal verschillen. Controleer de regels voordat je opslaat.</p> }
+                    </div>
+                    <p>Na opslaan krijgt de registratie een eigen interne referentie en de betaalstatus Openstaand.</p>
+                    <button type="submit" disabled="@(_saving || _options.Recipients.Length == 0)">@(_saving ? "Opslaan…" : "Factuur opslaan")</button>
+                </section>
+            </fieldset>
+        </EditForm>
+    }
+</div>
+
+@code {
+    private IJSObjectReference? _api;
+    private ManualInvoiceOptions? _options;
+    private ManualInvoiceRequest _model = NewModel();
+    private ManualInvoiceDetail? _saved;
+    private ManualInvoiceCalculation _calculation = ManualInvoiceCalculator.Calculate("EUR", []);
+    private Dictionary<string, string[]> _errors = new();
+    private string? _error;
+    private bool _loading = true, _saving, _showErrors;
+    private InvoiceRecipient? Recipient => _options?.Recipients.FirstOrDefault(recipient => recipient.PartyId == _model.PartyId);
+    private bool RequiresReverseCharge => _model.Lines?.Any(line => line.VatTreatment == "reverse_charge") == true;
+    private static ManualInvoiceRequest NewModel() => new() { InvoiceDate = DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Europe/Amsterdam"))), Lines = [new()] };
+    protected override async Task OnAfterRenderAsync(bool firstRender) { if (firstRender) await LoadAsync(); }
+    private async Task LoadAsync()
+    {
+        _loading = true; _error = null;
+        try
+        {
+            _api ??= await JS.InvokeAsync<IJSObjectReference>("import", "./Components/Pages/Finance/InvoiceRegistration.razor.js");
+            var response = await _api.InvokeAsync<RegistrationResponse<ManualInvoiceOptions>>("getOptions");
+            if (Accept(response)) { _options = response.Data; Recalculate(); }
+        }
+        catch (JSException) { _error = "Ontvangers konden niet worden opgehaald. Probeer het opnieuw."; }
+        finally { _loading = false; StateHasChanged(); }
+    }
+    private void Reset() { _model = NewModel(); _saved = null; _error = null; _showErrors = false; Recalculate(); }
+    private void Recalculate() { _errors.Clear(); _error = null; _calculation = ManualInvoiceCalculator.Calculate(_model.Currency, _model.Lines); }
+    private void AddLine() { if (_model.Lines!.Count < ManualInvoiceCalculator.MaximumLines) { _model.Lines.Add(new()); Recalculate(); } }
+    private void RemoveLine(int index) { _model.Lines!.RemoveAt(index); Recalculate(); }
+    private void MoveLine(int index, int direction) { var target = index + direction; if (target >= 0 && target < _model.Lines!.Count) { (_model.Lines[index], _model.Lines[target]) = (_model.Lines[target], _model.Lines[index]); Recalculate(); } }
+    private static string VatChoice(ManualInvoiceLineInput line) => line.VatTreatment == "regular" ? line.VatPercentage?.ToString(CultureInfo.InvariantCulture) ?? "21" : line.VatTreatment ?? "21";
+    private void SetVat(ManualInvoiceLineInput line, string? choice) { line.VatTreatment = choice is "exempt" or "reverse_charge" ? choice : "regular"; line.VatPercentage = decimal.TryParse(choice, NumberStyles.Number, CultureInfo.InvariantCulture, out var rate) ? rate : 0; Recalculate(); }
+    private void UpdateDueDate() { if (_model.InvoiceDate is { } date && _model.PaymentTermDays is >= 0 and <= 3650 && date.DayNumber <= DateOnly.MaxValue.DayNumber - _model.PaymentTermDays.Value) _model.DueDate = date.AddDays(_model.PaymentTermDays.Value); Recalculate(); }
+    private void UpdatePaymentTerm() { _model.PaymentTermDays = _model.DueDate is { } due && _model.InvoiceDate is { } date && due >= date ? due.DayNumber - date.DayNumber : null; Recalculate(); }
+    private void InvalidSubmit(EditContext context) { _showErrors = true; _error = "Controleer de gemarkeerde invoervelden. Je invoer is behouden."; }
+    private async Task SaveAsync()
+    {
+        if (_api is null || _saving) return;
+        Recalculate(); _showErrors = true;
+        if (!_calculation.IsValid) { _error = "Controleer de gemarkeerde factuurregels. Je invoer is behouden."; return; }
+        _saving = true;
+        try
+        {
+            var response = await _api.InvokeAsync<RegistrationResponse<ManualInvoiceDetail>>("registerInvoice", _model);
+            if (Accept(response)) _saved = response.Data;
+            else _errors = response.Errors ?? new();
+        }
+        catch (JSException) { _error = "Opslaan kon niet worden bevestigd. Je invoer is behouden. Controleer het overzicht voordat je opnieuw opslaat."; }
+        finally { _saving = false; }
+    }
+    private bool Accept<T>(RegistrationResponse<T> response)
+    {
+        if (response.Status == 401) { Navigation.NavigateTo("/auth/login", forceLoad: true); return false; }
+        if (response.Status == 403) { Navigation.NavigateTo("/access-denied", forceLoad: true); return false; }
+        if (response.Status is >= 200 and < 300) return true;
+        _error = response.Error ?? "De aanvraag is mislukt. Probeer het opnieuw."; return false;
+    }
+    private RenderFragment Error(string key) => builder =>
+    {
+        if (!_showErrors) return;
+        var messages = _errors.GetValueOrDefault(key) ?? _calculation.Errors.GetValueOrDefault(key);
+        if (messages is null) return;
+        builder.OpenElement(0, "p"); builder.AddAttribute(1, "class", "field-error"); builder.AddAttribute(2, "role", "alert"); builder.AddContent(3, string.Join(" ", messages)); builder.CloseElement();
+    };
+    private string Money(decimal amount) => amount.ToString("#,##0.00##", CultureInfo.GetCultureInfo("nl-NL")) + " " + _model.Currency;
+    public async ValueTask DisposeAsync() { if (_api is not null) try { await _api.DisposeAsync(); } catch (JSDisconnectedException) { } }
+    public record RegistrationResponse<T>(int Status, T? Data, string? Error, Dictionary<string, string[]>? Errors);
+}

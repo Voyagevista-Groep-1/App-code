@@ -1,0 +1,41 @@
+@page "/finance/invoices/{Id:int}"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Policy = AccessPolicies.Finance)]
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+<PageTitle>Factuur bekijken</PageTitle>
+<div class="invoice-view"><FinanceNavigation CurrentPage="Factuur bekijken" /><p><a href="/finance/invoices">← Terug naar facturen</a></p><h1>Factuur bekijken</h1>
+    @if (_loading) { <p role="status">Factuur laden…</p> }
+    else if (_error is not null) { <div role="alert"><p>@_error</p><button @onclick="LoadAsync">Opnieuw proberen</button></div> }
+    else if (_invoice is not null) { <ManualInvoiceSummary Invoice="_invoice" /> }
+</div>
+@code {
+    [Parameter] public int Id { get; set; }
+    private IJSObjectReference? _api;
+    private ManualInvoiceDetail? _invoice;
+    private bool _loading = true, _interactive, _disposed;
+    private long _requestId;
+    private string? _error;
+    protected override async Task OnAfterRenderAsync(bool firstRender) { if (firstRender) { _interactive = true; await LoadAsync(); } }
+    protected override async Task OnParametersSetAsync() { if (_interactive) await LoadAsync(); }
+    private async Task LoadAsync()
+    {
+        _loading = true; _error = null;
+        var requestId = ++_requestId;
+        var id = Id;
+        try
+        {
+            _api ??= await JS.InvokeAsync<IJSObjectReference>("import", "./Components/Pages/Finance/InvoiceRegistration.razor.js");
+            var response = await _api.InvokeAsync<InvoiceRegistration.RegistrationResponse<ManualInvoiceDetail>>("getInvoice", id);
+            if (_disposed || requestId != _requestId) return;
+            if (response.Status == 401) Navigation.NavigateTo("/auth/login", forceLoad: true);
+            else if (response.Status == 403) Navigation.NavigateTo("/access-denied", forceLoad: true);
+            else if (response.Status == 200) _invoice = response.Data;
+            else _error = response.Error ?? "De factuur kon niet worden opgehaald.";
+        }
+        catch (JSException) { if (!_disposed && requestId == _requestId) _error = "De factuur kon niet worden opgehaald. Controleer je verbinding en probeer opnieuw."; }
+        finally { if (!_disposed && requestId == _requestId) { _loading = false; StateHasChanged(); } }
+    }
+    public async ValueTask DisposeAsync() { _disposed = true; ++_requestId; if (_api is not null) try { await _api.DisposeAsync(); } catch (JSDisconnectedException) { } }
+}

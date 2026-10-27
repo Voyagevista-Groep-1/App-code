@@ -1,0 +1,9 @@
+.finance-home { min-height: 75vh; padding: 2rem; background: #f1f5fb; color: #19345d; font-family: 'Segoe UI', Arial, sans-serif; }
+.finance-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 1100px; margin-top: 2rem; }
+.finance-links ::deep a { display: block; padding: 1.5rem; background: white; border: 1px solid #cbd9e9; border-radius: 12px; color: #19345d; text-decoration: none; }
+.finance-links ::deep a:hover { border-color: #1761b6; background: #f8fbff; }
+.finance-links ::deep a:focus-visible { outline: 3px solid #3698dc; outline-offset: 3px; }
+.finance-links ::deep h2 { font-size: 1.2rem; margin-top: 0; }
+.finance-links ::deep p { line-height: 1.5; color: #516a83; }
+.finance-links ::deep span { display: block; margin-top: 1rem; font-weight: 600; color: #195b9b; }
+@media (max-width: 600px) { .finance-home { padding: 1rem; } }

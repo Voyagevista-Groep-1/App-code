@@ -27,13 +27,16 @@ builder.Services.AddScoped<TripService>();
 builder.Services.AddScoped<BookingService>();
 builder.Services.AddScoped<PricingService>();
 builder.Services.AddScoped<InvoiceService>();
+builder.Services.AddScoped<InvoiceWorkflowService>();
+builder.Services.AddScoped<ManualInvoiceService>();
 builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<TicketService>();
 builder.Services.AddScoped<SlaService>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents()
+    .AddHubOptions(options => options.MaximumReceiveMessageSize = 4 * 1024 * 1024);
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IPasswordHasher<AppUser>, PasswordHasher<AppUser>>();
@@ -85,5 +88,6 @@ app.MapRazorComponents<App>()
 
 app.MapAuthEndpoints();
 app.MapUserManagementEndpoints();
+app.MapInvoiceEndpoints();
 
 app.Run();

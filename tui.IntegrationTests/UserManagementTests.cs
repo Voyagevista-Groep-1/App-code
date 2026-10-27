@@ -172,7 +172,7 @@ public class UserManagementTests
         Assert.Equal("Finance", (await db.UserRoles.SingleAsync(role => role.UserId == 2)).RoleName);
     }
 
-    private sealed class WriteFailure : SaveChangesInterceptor
+    internal sealed class WriteFailure : SaveChangesInterceptor
     {
         public bool Enabled { get; set; }
         public override ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
@@ -182,10 +182,28 @@ public class UserManagementTests
         }
     }
 
-    private sealed class DatabaseApplication(WebApplication app, string adminConnection, string database, string connection, WriteFailure failure) : IAsyncDisposable
+    internal sealed class InvoiceReadFailure : DbCommandInterceptor
+    {
+        public bool Enabled { get; set; }
+        public bool FailAuditWrites { get; set; }
+        public override ValueTask<InterceptionResult<DbDataReader>> ReaderExecutingAsync(DbCommand command, CommandEventData eventData, InterceptionResult<DbDataReader> result, CancellationToken cancellationToken = default)
+        {
+            if (Enabled && command.CommandText.Contains("`Invoices`")) throw new InvalidOperationException("Simulated invoice read failure");
+            if (FailAuditWrites && command.CommandText.Contains("INSERT INTO `AuditLog`")) throw new InvalidOperationException("Simulated audit write failure");
+            return base.ReaderExecutingAsync(command, eventData, result, cancellationToken);
+        }
+        public override ValueTask<InterceptionResult<int>> NonQueryExecutingAsync(DbCommand command, CommandEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
+        {
+            if (FailAuditWrites && command.CommandText.Contains("INSERT INTO `AuditLog`")) throw new InvalidOperationException("Simulated audit write failure");
+            return base.NonQueryExecutingAsync(command, eventData, result, cancellationToken);
+        }
+    }
+
+    internal sealed class DatabaseApplication(WebApplication app, string adminConnection, string database, string connection, WriteFailure failure, InvoiceReadFailure readFailure) : IAsyncDisposable
     {
         public WebApplication App => app;
         public WriteFailure Failure => failure;
+        public InvoiceReadFailure ReadFailure => readFailure;
         public ApplicationDbContext CreateDb() => new(new DbContextOptionsBuilder<ApplicationDbContext>().UseMySql(connection, new MariaDbServerVersion(new Version(11, 0, 0))).Options);
 
         public static async Task<DatabaseApplication> StartAsync(bool legacyUsers = false)
@@ -202,9 +220,13 @@ public class UserManagementTests
             builder.Logging.ClearProviders();
             builder.WebHost.UseTestServer();
             var failure = new WriteFailure();
-            builder.Services.AddDbContextFactory<ApplicationDbContext>(options => options.UseMySql(connection, new MariaDbServerVersion(new Version(11, 0, 0))).AddInterceptors(failure));
+            var readFailure = new InvoiceReadFailure();
+            builder.Services.AddDbContextFactory<ApplicationDbContext>(options => options.UseMySql(connection, new MariaDbServerVersion(new Version(11, 0, 0))).AddInterceptors(failure, readFailure));
             builder.Services.AddScoped<IUserSession, UserSession>();
             builder.Services.AddScoped<UserRoleService>();
+            builder.Services.AddScoped<InvoiceService>();
+            builder.Services.AddScoped<InvoiceWorkflowService>();
+            builder.Services.AddScoped<ManualInvoiceService>();
             builder.Services.AddScoped<RoleCookieEvents>();
             builder.Services.AddRazorComponents().AddInteractiveServerComponents();
             builder.Services.AddCascadingAuthenticationState();
@@ -219,6 +241,7 @@ public class UserManagementTests
             var app = builder.Build();
             app.UseAuthentication(); app.UseAuthorization(); app.UseAntiforgery();
             app.MapUserManagementEndpoints();
+            app.MapInvoiceEndpoints();
             app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
             app.MapGet("/testing/signin/{id:int}", async (int id, HttpContext context, IDbContextFactory<ApplicationDbContext> factory) =>
             {
@@ -226,7 +249,7 @@ public class UserManagementTests
                 var user = await db.AppUsers.Include(user => user.UserRoles).SingleAsync(user => user.UserId == id);
                 await context.SignInAsync(UserSession.CreatePrincipal(user, DateTimeOffset.UtcNow.AddHours(1)));
             });
-            var instance = new DatabaseApplication(app, administrative, database, connection, failure);
+            var instance = new DatabaseApplication(app, administrative, database, connection, failure, readFailure);
             try
             {
                 await using var db = instance.CreateDb();

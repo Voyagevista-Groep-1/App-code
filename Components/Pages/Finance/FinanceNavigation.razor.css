@@ -1,0 +1,8 @@
+.finance-navigation { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.finance-navigation ::deep a { display: inline-block; padding: .7rem 1rem; border: 1px solid #cbd9e9; border-radius: 6px; background: white; color: #195b9b; text-decoration: none; font-size: .9rem; }
+.finance-navigation ::deep a.active, .finance-navigation ::deep a:hover { background: #1761b6; color: white; border-color: #1761b6; }
+.finance-navigation ::deep a:focus-visible, .breadcrumbs a:focus-visible { outline: 3px solid #3698dc; outline-offset: 3px; }
+.breadcrumbs { margin-bottom: 1.25rem; color: #516a83; font-size: .85rem; }
+.breadcrumbs ol { list-style: none; display: flex; flex-wrap: wrap; gap: .5rem; margin: 0; padding: 0; }
+.breadcrumbs li + li::before { content: "/"; margin-right: .5rem; }
+.breadcrumbs a { color: #195b9b; }

@@ -1,0 +1,33 @@
+@using System.Globalization
+<div class="registered-invoice">
+    <header><h2>@Invoice.InternalReference</h2><p>Oorspronkelijk factuurnummer: <strong>@Invoice.Data.OriginalInvoiceNumber</strong></p><span class="status">@Invoice.PaymentStatus</span></header>
+    <div class="parties">
+        <section><h3>Afzender</h3><p>@Invoice.Data.SenderName</p><p class="address">@Invoice.Data.SenderAddress</p><p>KVK: @(Invoice.Data.SenderKvkNumber ?? "—")</p><p>Btw-id: @(Invoice.Data.SenderVatNumber ?? "—")</p></section>
+        <section><h3>Ontvanger</h3><p>@Invoice.Recipient.Name</p><p class="address">@Invoice.Recipient.Address</p><p>Btw-id: @(Invoice.Recipient.VatNumber ?? "—")</p></section>
+    </div>
+    <dl class="header-data">
+        <dt>Factuurdatum</dt><dd>@Date(Invoice.Data.InvoiceDate)</dd><dt>Leveringsdatum</dt><dd>@Date(Invoice.Data.DeliveryDate)</dd>
+        <dt>Leveringsperiode</dt><dd>@Date(Invoice.Data.DeliveryPeriodStart) – @Date(Invoice.Data.DeliveryPeriodEnd)</dd>
+        <dt>Onderwerp</dt><dd>@(Invoice.Data.Subject ?? "—")</dd><dt>Betalingskenmerk</dt><dd>@(Invoice.Data.PaymentReference ?? "—")</dd>
+        <dt>Betalingstermijn</dt><dd>@(Invoice.Data.PaymentTermDays?.ToString() ?? "—") dagen</dd><dt>Vervaldatum</dt><dd>@Date(Invoice.Data.DueDate)</dd>
+        <dt>Valuta</dt><dd>@Invoice.Data.Currency</dd><dt>Opmerkingen</dt><dd class="address">@(Invoice.Data.Notes ?? "—")</dd>
+        <dt>Bronbedrag ter controle</dt><dd>@(Invoice.Data.SourceTotalAmount is { } source ? Money(source) : "—")</dd>
+    </dl>
+    <div class="table-container"><table><caption>Opgeslagen factuurregels in oorspronkelijke volgorde</caption>
+        <thead><tr><th>Regel / omschrijving</th><th>Aantal / eenheid</th><th>Prijs excl.</th><th>Korting</th><th>Btw</th><th>Excl. btw</th><th>Btw-bedrag</th><th>Incl. btw</th></tr></thead>
+        <tbody>@foreach (var line in Invoice.Calculation.Lines)
+        {
+            <tr><td><strong>@line.Position. @line.Description</strong>@if (!string.IsNullOrEmpty(line.VatInformation)) { <p>@line.VatInformation</p> }</td>
+                <td>@line.Quantity.ToString("0.######", Dutch) @line.Unit</td><td>@line.UnitPrice.ToString("#,##0.00####", Dutch)</td>
+                <td>@if (line.DiscountPercentage is { } discount) { <span>@discount.ToString("0.######", Dutch)% · </span> }@Money(line.DiscountAmount)</td>
+                <td>@ManualInvoiceTotals.VatLabel(line.VatTreatment, line.VatPercentage)</td><td>@Money(line.NetAmount)</td><td>@Money(line.VatAmount)</td><td>@Money(line.GrossAmount)</td></tr>
+        }</tbody>
+    </table></div>
+    <ManualInvoiceTotals Calculation="Invoice.Calculation" Currency="@(Invoice.Data.Currency ?? "EUR")" />
+</div>
+@code {
+    [Parameter, EditorRequired] public ManualInvoiceDetail Invoice { get; set; } = null!;
+    private static readonly CultureInfo Dutch = CultureInfo.GetCultureInfo("nl-NL");
+    private static string Date(DateOnly? date) => date?.ToString("dd-MM-yyyy", Dutch) ?? "—";
+    private string Money(decimal amount) => amount.ToString("#,##0.00##", Dutch) + " " + Invoice.Data.Currency;
+}

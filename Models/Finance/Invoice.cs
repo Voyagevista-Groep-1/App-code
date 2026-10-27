@@ -25,8 +25,26 @@ public class Invoice
     [MaxLength(30)]
     public string Status { get; set; } = string.Empty;
 
-    [Precision(10, 2)]
+    [Precision(14, 4)]
     public decimal TotalAmount { get; set; }
+
+    [MaxLength(3)]
+    public string Currency { get; set; } = "EUR";
+
+    [MaxLength(30)]
+    public string WorkflowStatus { get; set; } = "concept";
+
+    public int? CreatedByUserId { get; set; }
+    public int? ReviewedByUserId { get; set; }
+    public DateTime? CreatedAtUtc { get; set; }
+    public DateTime? UpdatedAtUtc { get; set; }
+    public DateTime? ReviewedAtUtc { get; set; }
+    [MaxLength(1000)]
+    public string? ReviewComment { get; set; }
+    [ConcurrencyCheck]
+    public long Version { get; set; }
+    public bool IsManualRegistration { get; set; }
+    public ManualInvoiceRegistration? ManualRegistration { get; set; }
 
     // Navigation properties
     public Party Party { get; set; } = null!;

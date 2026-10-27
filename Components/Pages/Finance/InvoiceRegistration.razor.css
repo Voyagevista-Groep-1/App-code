@@ -1,0 +1,33 @@
+.registration-page { min-height: 75vh; padding: 2rem; background: #f1f5fb; color: #19345d; font-family: 'Segoe UI', Arial, sans-serif; }
+.registration-page > header, .registration-page > p, .registration-page ::deep form, .registration-page ::deep .registered-invoice { max-width: 1400px; margin-left: auto; margin-right: auto; }
+h1 { font-size: 1.8rem; } h2 { font-size: 1.15rem; margin: 0 0 1rem; }
+p { line-height: 1.5; }
+.form-body { padding: 0; margin: 0; border: 0; min-width: 0; }
+.panel { background: white; border: 1px solid #dce5ef; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; }
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem 1.5rem; }
+.fields > div { min-width: 0; }
+label { display: block; font-size: .9rem; font-weight: 600; margin-bottom: .5rem; }
+.registration-page ::deep input, .registration-page ::deep select, .registration-page ::deep textarea { width: 100%; box-sizing: border-box; padding: .7rem; border: 1px solid #a9bbd0; border-radius: 6px; color: #19345d; background: white; font: inherit; }
+.registration-page ::deep textarea { min-height: 80px; resize: vertical; }
+.registration-page ::deep .invalid { border-color: #ac332b; }
+.registration-page ::deep .validation-message, .registration-page ::deep .field-error, .field-error { color: #9e2922; font-size: .88rem; }
+.registration-page ::deep input:focus-visible, .registration-page ::deep select:focus-visible, .registration-page ::deep textarea:focus-visible, button:focus-visible { outline: 3px solid #3698dc; outline-offset: 2px; }
+button { padding: .7rem 1rem; border: 1px solid #1761b6; border-radius: 6px; background: #1761b6; color: white; font: inherit; cursor: pointer; }
+button.secondary { background: white; color: #195b9b; border-color: #a9bbd0; }
+button:disabled { opacity: .5; cursor: default; }
+.section-heading, .line-actions, .period > div { display: flex; gap: .6rem; align-items: center; }
+.section-heading { justify-content: space-between; }
+.period > div > input { min-width: 0; }
+.recipient-preview { background: #f6f9fd; border-radius: 6px; padding: 1rem; margin-top: 1rem; white-space: pre-wrap; }
+.recipient-preview p { margin-bottom: 0; }
+.invoice-line { padding: 1rem; border: 1px solid #cbd9e9; border-radius: 8px; margin: 1.5rem 0; min-width: 0; }
+legend { font-weight: 700; padding: 0 .5rem; }
+.line-actions { justify-content: flex-end; margin-bottom: 1rem; }
+.line-fields { grid-template-columns: repeat(3, 1fr); }
+.wide { grid-column: 1 / -1; }
+.line-amounts { padding: .8rem; background: #f6f9fd; font-size: .9rem; }
+.source-total { margin: 1.5rem 0; max-width: 500px; }
+.success, .error-banner { padding: 1rem; border: 1px solid; border-radius: 6px; }
+.success { color: #216444; background: #eaf8f0; border-color: #a1d0b7; }
+.error-banner { color: #9e2922; background: #fff0ef; border-color: #ebaaa5; }
+@media (max-width: 850px) { .registration-page { padding: 1rem; } .fields, .line-fields { grid-template-columns: 1fr; } }

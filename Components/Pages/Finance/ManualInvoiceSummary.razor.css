@@ -1,0 +1,15 @@
+.registered-invoice { padding: 1.5rem; background: white; border: 1px solid #dce5ef; border-radius: 12px; }
+header { border-bottom: 1px solid #dce5ef; padding-bottom: 1rem; }
+h2 { overflow-wrap: anywhere; margin-top: 0; font-size: 1.25rem; }
+h3 { font-size: 1rem; }
+.status { display: inline-block; padding: .3rem .65rem; border-radius: 5px; background: #fff1d5; color: #81520b; }
+.parties { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.address { white-space: pre-wrap; overflow-wrap: anywhere; }
+.header-data { display: grid; grid-template-columns: minmax(140px, .4fr) 1fr; gap: .75rem; }
+dt { font-weight: 600; } dd { margin: 0; overflow-wrap: anywhere; }
+.table-container { overflow-x: auto; margin: 2rem 0; }
+table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+caption { text-align: left; font-weight: 600; margin-bottom: 1rem; }
+th, td { text-align: left; vertical-align: top; padding: .8rem; border-bottom: 1px solid #dce5ef; }
+td p { font-size: .8rem; max-width: 400px; overflow-wrap: anywhere; }
+@media (max-width: 750px) { .parties { grid-template-columns: 1fr; } }

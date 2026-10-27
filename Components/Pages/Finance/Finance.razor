@@ -2,8 +2,16 @@
 @layout MainLayout
 @attribute [Microsoft.AspNetCore.Authorization.Authorize(Policy = AccessPolicies.Finance)]
 
-<PageTitle>Finance</PageTitle>
+<PageTitle>Financiën</PageTitle>
 
-<div class="main">
-    Finance
+<div class="finance-home">
+    <FinanceNavigation />
+    <h1>Financiën</h1>
+    <p>Kies een onderdeel om verder te gaan.</p>
+    <div class="finance-links">
+        <a href="/finance/invoices"><h2>Facturen bekijken</h2><p>Doorzoek facturen, filter op betaalstatus en open opgeslagen registraties.</p><span>Naar facturen →</span></a>
+        <RoleView Policy="@AccessPolicies.InvoiceWrite">
+            <a href="/finance/invoices/new"><h2>Factuur registreren</h2><p>Neem een ontvangen factuur over, inclusief afzender, ontvanger en factuurregels.</p><span>Nieuwe registratie →</span></a>
+        </RoleView>
+    </div>
 </div>

@@ -1,0 +1,26 @@
+@using System.Globalization
+<section class="invoice-totals" aria-label="Factuurtotalen" aria-live="polite">
+    <h2>Controleer de totalen</h2>
+    @if (!Calculation.IsValid) { <p>Vul alle factuurregels correct in om de volledige berekening te controleren.</p> }
+    <dl>
+        <dt>Subtotaal vóór korting, excl. btw</dt><dd>@Money(Calculation.SubtotalBeforeDiscount)</dd>
+        <dt>Totale korting</dt><dd>@Money(Calculation.TotalDiscount)</dd>
+        <dt>Totaal exclusief btw</dt><dd>@Money(Calculation.TotalExcludingVat)</dd>
+    </dl>
+    @if (Calculation.VatGroups.Length > 0)
+    {
+        <table><caption>Btw-uitsplitsing</caption><thead><tr><th>Btw-behandeling</th><th>Grondslag</th><th>Btw</th></tr></thead>
+            <tbody>@foreach (var group in Calculation.VatGroups) { <tr><td>@VatLabel(group.Treatment, group.Percentage)</td><td>@Money(group.TaxableAmount)</td><td>@Money(group.VatAmount)</td></tr> }</tbody>
+        </table>
+    }
+    <dl><dt>Totaal btw</dt><dd>@Money(Calculation.TotalVat)</dd><dt class="grand-total">Totaal inclusief btw</dt><dd class="grand-total">@Money(Calculation.TotalIncludingVat)</dd></dl>
+</section>
+@code {
+    [Parameter, EditorRequired] public ManualInvoiceCalculation Calculation { get; set; } = null!;
+    [Parameter] public string Currency { get; set; } = "EUR";
+    private string Money(decimal value) => value.ToString("#,##0.00##", CultureInfo.GetCultureInfo("nl-NL")) + " " + Currency;
+    public static string VatLabel(string treatment, decimal percentage) => treatment switch
+    {
+        "exempt" => "Vrijgesteld", "reverse_charge" => "Btw verlegd", _ => percentage.ToString("0.##", CultureInfo.GetCultureInfo("nl-NL")) + "%"
+    };
+}

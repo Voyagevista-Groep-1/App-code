@@ -110,6 +110,48 @@ namespace tui.Migrations
                     b.ToTable("AppUsers");
                 });
 
+            modelBuilder.Entity("tui.Models.AuditLogEntry", b =>
+                {
+                    b.Property<long>("AuditLogEntryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("AuditLogEntryId"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int>("ActorUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AfterJson")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("BeforeJson")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("EntityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime>("OccurredAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("AuditLogEntryId");
+
+                    b.HasIndex("ActorUserId");
+
+                    b.HasIndex("EntityType", "EntityId", "OccurredAtUtc");
+
+                    b.ToTable("AuditLog");
+                });
+
             modelBuilder.Entity("tui.Models.Booking", b =>
                 {
                     b.Property<int>("BookingId")
@@ -410,6 +452,19 @@ namespace tui.Migrations
                     b.Property<int?>("BookingId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("CreatedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("CreatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(3)
+                        .HasColumnType("varchar(3)")
+                        .HasDefaultValue("EUR");
+
                     b.Property<DateOnly?>("DueDate")
                         .HasColumnType("date");
 
@@ -426,7 +481,20 @@ namespace tui.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
+                    b.Property<bool>("IsManualRegistration")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int>("PartyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReviewComment")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<DateTime?>("ReviewedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("ReviewedByUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -435,17 +503,37 @@ namespace tui.Migrations
                         .HasColumnType("varchar(30)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
+                        .HasPrecision(14, 4)
+                        .HasColumnType("decimal(14,4)");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("WorkflowStatus")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)")
+                        .HasDefaultValue("concept");
 
                     b.HasKey("InvoiceId");
 
                     b.HasIndex("BookingId");
 
+                    b.HasIndex("CreatedByUserId");
+
                     b.HasIndex("InvoiceNumber")
                         .IsUnique();
 
                     b.HasIndex("PartyId");
+
+                    b.HasIndex("ReviewedByUserId");
+
+                    b.HasIndex("WorkflowStatus");
 
                     b.ToTable("Invoices");
                 });
@@ -458,35 +546,84 @@ namespace tui.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("InvoiceLineId"));
 
-                    b.Property<int>("AccountId")
+                    b.Property<int?>("AccountId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("BaseAmount")
+                        .HasPrecision(14, 4)
+                        .HasColumnType("decimal(14,4)");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
+                    b.Property<decimal>("DiscountAmount")
+                        .HasPrecision(14, 4)
+                        .HasColumnType("decimal(14,4)");
+
+                    b.Property<decimal?>("DiscountFixedAmount")
+                        .HasPrecision(14, 4)
+                        .HasColumnType("decimal(14,4)");
+
+                    b.Property<decimal?>("DiscountPercentage")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<decimal>("GrossAmount")
+                        .HasPrecision(14, 4)
+                        .HasColumnType("decimal(14,4)");
+
                     b.Property<int>("InvoiceId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("NetAmount")
+                        .HasPrecision(14, 4)
+                        .HasColumnType("decimal(14,4)");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Price")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
 
                     b.Property<decimal>("Quantity")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
 
                     b.Property<int?>("TaxRateId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<decimal>("VatAmount")
+                        .HasPrecision(14, 4)
+                        .HasColumnType("decimal(14,4)");
+
+                    b.Property<string>("VatInformation")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<decimal>("VatPercentage")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<string>("VatTreatment")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("InvoiceLineId");
 
                     b.HasIndex("AccountId");
 
-                    b.HasIndex("InvoiceId");
-
                     b.HasIndex("TaxRateId");
+
+                    b.HasIndex("InvoiceId", "Position");
 
                     b.ToTable("InvoiceLines");
                 });
@@ -549,6 +686,109 @@ namespace tui.Migrations
                     b.HasIndex("JournalEntryId");
 
                     b.ToTable("JournalEntryLines");
+                });
+
+            modelBuilder.Entity("tui.Models.ManualInvoiceRegistration", b =>
+                {
+                    b.Property<int>("InvoiceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CalculationPolicy")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateOnly?>("DeliveryDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly?>("DeliveryPeriodEnd")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly?>("DeliveryPeriodStart")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(4000)
+                        .HasColumnType("varchar(4000)");
+
+                    b.Property<string>("OriginalInvoiceNumber")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("PaymentReference")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int?>("PaymentTermDays")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RecipientAddress")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("RecipientName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("RecipientVatNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("SenderAddress")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("SenderKvkNumber")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<string>("SenderName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<string>("SenderVatNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("SourceIdentityKey")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<decimal?>("SourceTotalAmount")
+                        .HasPrecision(14, 4)
+                        .HasColumnType("decimal(14,4)");
+
+                    b.Property<string>("Subject")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<decimal>("SubtotalBeforeDiscount")
+                        .HasPrecision(14, 4)
+                        .HasColumnType("decimal(14,4)");
+
+                    b.Property<decimal>("TotalDiscount")
+                        .HasPrecision(14, 4)
+                        .HasColumnType("decimal(14,4)");
+
+                    b.Property<decimal>("TotalExcludingVat")
+                        .HasPrecision(14, 4)
+                        .HasColumnType("decimal(14,4)");
+
+                    b.Property<decimal>("TotalVat")
+                        .HasPrecision(14, 4)
+                        .HasColumnType("decimal(14,4)");
+
+                    b.HasKey("InvoiceId");
+
+                    b.HasIndex("SourceIdentityKey", "OriginalInvoiceNumber")
+                        .IsUnique();
+
+                    b.ToTable("ManualInvoiceRegistrations");
                 });
 
             modelBuilder.Entity("tui.Models.Party", b =>
@@ -670,6 +910,18 @@ namespace tui.Migrations
                         new
                         {
                             Name = "IT"
+                        },
+                        new
+                        {
+                            Name = "medewerker"
+                        },
+                        new
+                        {
+                            Name = "controller"
+                        },
+                        new
+                        {
+                            Name = "read_only"
                         });
                 });
 
@@ -1110,6 +1362,15 @@ namespace tui.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("tui.Models.AuditLogEntry", b =>
+                {
+                    b.HasOne("tui.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("ActorUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("tui.Models.Booking", b =>
                 {
                     b.HasOne("tui.Models.Client", "Client")
@@ -1257,11 +1518,21 @@ namespace tui.Migrations
                         .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("tui.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("tui.Models.Party", "Party")
                         .WithMany("Invoices")
                         .HasForeignKey("PartyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("tui.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("ReviewedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Booking");
 
@@ -1273,8 +1544,7 @@ namespace tui.Migrations
                     b.HasOne("tui.Models.Account", "Account")
                         .WithMany("InvoiceLines")
                         .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("tui.Models.Invoice", "Invoice")
                         .WithMany("InvoiceLines")
@@ -1321,6 +1591,17 @@ namespace tui.Migrations
                     b.Navigation("Account");
 
                     b.Navigation("JournalEntry");
+                });
+
+            modelBuilder.Entity("tui.Models.ManualInvoiceRegistration", b =>
+                {
+                    b.HasOne("tui.Models.Invoice", "Invoice")
+                        .WithOne("ManualRegistration")
+                        .HasForeignKey("tui.Models.ManualInvoiceRegistration", "InvoiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Invoice");
                 });
 
             modelBuilder.Entity("tui.Models.Party", b =>
@@ -1583,6 +1864,8 @@ namespace tui.Migrations
                     b.Navigation("InvoiceLines");
 
                     b.Navigation("JournalEntries");
+
+                    b.Navigation("ManualRegistration");
 
                     b.Navigation("Payments");
                 });
