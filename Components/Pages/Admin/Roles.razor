@@ -7,64 +7,110 @@
 
 <PageTitle>Rollen</PageTitle>
 
-<h2>Rol aanmaken</h2>
-<input @bind="newRoleName" />
-<button @onclick="CreateRole">Aanmaken</button>
-<p>@createMessage</p>
+<div class="roles-page">
+    <div class="roles-grid">
+        <section class="roles-card roles-overview">
+            <div class="card-heading">
+                <div>
+                    <h1>Rollen</h1>
+                    <p>Geconfigureerde rollen en gekoppelde gebruikers</p>
+                </div>
+                <span class="role-count">@roles.Count rollen</span>
+            </div>
 
-<h2>Rollen</h2>
-<ul>
-    @foreach (var r in roles)
-    {
-        <li>@r.Name (Id: @r.Id) <button @onclick="() => DeleteRole(r.Id)">Verwijderen</button></li>
-    }
-</ul>
+            <div class="create-role">
+                <input aria-label="Nieuwe rolnaam" placeholder="Nieuwe rolnaam..." @bind="newRoleName" />
+                <button class="button button-primary" @onclick="CreateRole">Toevoegen</button>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(createMessage))
+            {
+                <p class="feedback">@createMessage</p>
+            }
 
-<h2>Rol toewijzen aan gebruiker</h2>
-<div>
-    Zoeken op e-mailadres of naam: <input type="text" @bind="searchTerm" @bind:event="oninput"/>
+            <div class="role-list">
+                @foreach (var r in roles)
+                {
+                    <div class="role-row">
+                        <div>
+                            <strong>@r.Name</strong>
+                            <small>ID: @r.Id</small>
+                        </div>
+                        <button class="button button-danger" @onclick="() => DeleteRole(r.Id)">Verwijderen</button>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <section class="roles-card assignment-card">
+            <div class="card-heading">
+                <div>
+                    <h2>Rol toewijzen</h2>
+                    <p>Koppel rollen aan een gebruiker</p>
+                </div>
+                @if (selectedUser != null)
+                {
+                    <span class="selected-badge">Geselecteerd</span>
+                }
+            </div>
+
+            <div class="user-search">
+                <input aria-label="Zoek gebruiker" placeholder="Zoek op e-mailadres of naam..." type="text" @bind="searchTerm" @bind:event="oninput" />
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                <div class="user-results">
+                    <h3>Gebruikers</h3>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>E-mailadres</th><th>Naam</th><th>Rollen</th><th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var u in users.Where(x => x.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || (x.FirstName + " " + x.LastName).Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                <tr>
+                                    <td>@u.Email</td>
+                                    <td>@u.FirstName @u.LastName</td>
+                                    <td>@string.Join(", ", u.UserRoles.Select(ur => ur.Role.Name))</td>
+                                    <td><button class="button button-light" @onclick="() => SelectUser(u)">Selecteren</button></td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+
+            @if (selectedUser != null)
+            {
+                <div class="selected-user">
+                    <div class="selected-user-heading">
+                        <div>
+                            <h3>Rollen voor @selectedUser.Email</h3>
+                            <p>Selecteer de rollen die deze gebruiker mag gebruiken.</p>
+                        </div>
+                    </div>
+                    <div class="role-options">
+                        @foreach (var r in roles)
+                        {
+                            <label class="role-option">
+                                <input type="checkbox" checked="@selectedRoleIds.Contains(r.Id)" @onchange="e => ToggleRole(r.Id, (bool)(e.Value ?? false))" />
+                                <span>@r.Name</span>
+                            </label>
+                        }
+                    </div>
+                    <div class="save-actions">
+                        <button class="button button-primary" @onclick="Save">Opslaan</button>
+                        <p class="feedback">@saveMessage</p>
+                    </div>
+                </div>
+            }
+        </section>
+    </div>
 </div>
-
-@if (!string.IsNullOrWhiteSpace(searchTerm))
-{
-    <h2>Gebruikers</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>E-mailadres</th><th>Naam</th><th>Rollen</th><th></th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var u in users.Where(x => x.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || (x.FirstName + " " + x.LastName).Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
-        {
-            <tr>
-                <td>@u.Email</td>
-                <td>@u.FirstName @u.LastName</td>
-                <td>@string.Join(", ", u.UserRoles.Select(ur => ur.Role.Name))</td>
-                <td>
-                    <button @onclick="() => SelectUser(u)">Selecteren</button>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-}
-
-@if (selectedUser != null)
-{
-    <h2>Rollen toewijzen aan @selectedUser.Email</h2>
-    @foreach (var r in roles)
-    {
-        <label>
-            <input type="checkbox" checked="@selectedRoleIds.Contains(r.Id)" @onchange="e => ToggleRole(r.Id, (bool)(e.Value ?? false))"/>
-            @r.Name
-        </label>
-        <br/>
-    }
-
-    <button @onclick="Save">Opslaan</button>
-    <p>@saveMessage</p>
-}
 
 @code {
     private string newRoleName = string.Empty;

@@ -1,0 +1,262 @@
+.roles-page {
+    min-height: calc(100vh - 78px);
+    padding: 1.25rem;
+    box-sizing: border-box;
+    background: #f3f7fc;
+    color: #17315b;
+}
+
+.roles-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.8fr);
+    align-items: start;
+    gap: 1rem;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.roles-card {
+    padding: 1rem;
+    border: 1px solid #e1e9f4;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 5px 16px rgba(37, 67, 110, 0.06);
+}
+
+.card-heading,
+.create-role,
+.user-search,
+.selected-user-heading,
+.save-actions,
+.role-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+}
+
+.card-heading {
+    margin-bottom: 0.8rem;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin: 0;
+}
+
+h1 {
+    font-size: 1.15rem;
+}
+
+h2 {
+    font-size: 0.95rem;
+}
+
+h3 {
+    margin-bottom: 0.45rem;
+    font-size: 0.75rem;
+}
+
+.card-heading p,
+.selected-user-heading p,
+.role-row small {
+    display: block;
+    margin-top: 0.2rem;
+    color: #8b9db7;
+    font-size: 0.65rem;
+}
+
+.role-count,
+.selected-badge {
+    padding: 0.3rem 0.5rem;
+    border-radius: 999px;
+    color: #287dff;
+    background: #edf5ff;
+    font-size: 0.62rem;
+    white-space: nowrap;
+}
+
+input {
+    min-width: 0;
+    box-sizing: border-box;
+    border: 1px solid #dce6f2;
+    border-radius: 6px;
+    outline: none;
+    color: #17315b;
+    background: #fbfcfe;
+    font: inherit;
+    font-size: 0.72rem;
+}
+
+input:focus {
+    border-color: #6caeff;
+    box-shadow: 0 0 0 3px rgba(25, 118, 255, 0.1);
+}
+
+.create-role input,
+.user-search input {
+    width: 100%;
+    padding: 0.55rem 0.65rem;
+}
+
+.create-role input {
+    flex: 1;
+}
+
+.button {
+    flex-shrink: 0;
+    padding: 0.52rem 0.7rem;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font: inherit;
+    font-size: 0.65rem;
+    cursor: pointer;
+}
+
+.button-primary {
+    color: #fff;
+    background: #1976ff;
+}
+
+.button-primary:hover {
+    background: #1168e7;
+}
+
+.button-light {
+    border-color: #cfe0f7;
+    color: #287dff;
+    background: #fff;
+}
+
+.button-danger {
+    padding: 0.35rem 0.5rem;
+    border-color: #ffd1d7;
+    color: #e55063;
+    background: #fff7f8;
+    font-size: 0.6rem;
+}
+
+.feedback {
+    margin-top: 0.55rem;
+    color: #4b9b7c;
+    font-size: 0.65rem;
+}
+
+.role-list {
+    margin-top: 0.8rem;
+    border-top: 1px solid #edf1f6;
+}
+
+.role-row {
+    min-height: 2.45rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid #edf1f6;
+}
+
+.role-row strong {
+    display: block;
+    font-size: 0.72rem;
+}
+
+.user-search {
+    margin-bottom: 0.9rem;
+}
+
+.user-results {
+    margin-top: 0.25rem;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.65rem;
+}
+
+th,
+td {
+    padding: 0.55rem 0.45rem;
+    text-align: left;
+    border-bottom: 1px solid #edf1f6;
+    white-space: nowrap;
+}
+
+th {
+    color: #8b9db7;
+    background: #f7faff;
+    font-size: 0.58rem;
+    font-weight: 600;
+}
+
+td {
+    color: #536987;
+}
+
+.selected-user {
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid #e8eef6;
+}
+
+.role-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+    margin-top: 0.75rem;
+}
+
+.role-option {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.48rem 0.55rem;
+    border: 1px solid #e4ebf4;
+    border-radius: 6px;
+    color: #536987;
+    font-size: 0.68rem;
+    cursor: pointer;
+}
+
+.role-option:has(input:checked) {
+    border-color: #9dc7ff;
+    color: #287dff;
+    background: #f1f7ff;
+}
+
+.role-option input {
+    accent-color: #1976ff;
+}
+
+.save-actions {
+    justify-content: flex-start;
+    margin-top: 0.8rem;
+}
+
+.save-actions .feedback {
+    margin: 0;
+}
+
+@media (max-width: 800px) {
+    .roles-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .roles-page {
+        padding: 0.75rem;
+    }
+
+    .roles-card {
+        padding: 0.8rem;
+    }
+
+    .role-options {
+        grid-template-columns: 1fr;
+    }
+}
