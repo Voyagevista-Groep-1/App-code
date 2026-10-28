@@ -42,8 +42,8 @@ public class AuthService(
         email = email.Trim().ToUpperInvariant();
 
         var user = await db.AppUsers
-            .Include(u => u.UserRoles)
-            .ThenInclude(ur => ur.Role)
+            .Include(u => u.Client)
+            .ThenInclude(c => c!.ClientType)
             .SingleOrDefaultAsync(u => u.Email == email);
 
         if (user is null)
@@ -67,9 +67,10 @@ public class AuthService(
             new(ClaimTypes.Name, $"{user.FirstName} {user.LastName}")
         };
 
-        foreach (var userRole in user.UserRoles)
+        var clientType = user.Client?.ClientType;
+        if (clientType is not null)
         {
-            claims.Add(new Claim(ClaimTypes.Role, userRole.Role.Name));
+            claims.Add(new Claim(ClaimTypes.Role, clientType.Name));
         }
 
         if (user.Email == AdminEmail && !claims.Any(c => c.Type == ClaimTypes.Role && c.Value == "Admin"))

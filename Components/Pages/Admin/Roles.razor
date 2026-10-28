@@ -33,9 +33,9 @@
                     <div class="role-row">
                         <div>
                             <strong>@r.Name</strong>
-                            <small>ID: @r.Id</small>
+                            <small>ID: @r.ClientTypeId</small>
                         </div>
-                        <button class="button button-danger" @onclick="() => DeleteRole(r.Id)">Verwijderen</button>
+                        <button class="button button-danger" @onclick="() => DeleteRole(r.ClientTypeId)">Verwijderen</button>
                     </div>
                 }
             </div>
@@ -74,7 +74,7 @@
                                 <tr>
                                     <td>@u.Email</td>
                                     <td>@u.FirstName @u.LastName</td>
-                                    <td>@string.Join(", ", u.UserRoles.Select(ur => ur.Role.Name))</td>
+                                    <td>@u.Client?.ClientType?.Name</td>
                                     <td><button class="button button-light" @onclick="() => SelectUser(u)">Selecteren</button></td>
                                 </tr>
                             }
@@ -89,15 +89,15 @@
                 <div class="selected-user">
                     <div class="selected-user-heading">
                         <div>
-                            <h3>Rollen voor @selectedUser.Email</h3>
-                            <p>Selecteer de rollen die deze gebruiker mag gebruiken.</p>
+                            <h3>Rol voor @selectedUser.Email</h3>
+                            <p>Selecteer de rol van deze gebruiker.</p>
                         </div>
                     </div>
                     <div class="role-options">
                         @foreach (var r in roles)
                         {
                             <label class="role-option">
-                                <input type="checkbox" checked="@selectedRoleIds.Contains(r.Id)" @onchange="e => ToggleRole(r.Id, (bool)(e.Value ?? false))" />
+                                <input type="radio" name="role" checked="@(selectedRoleId == r.ClientTypeId)" @onchange="() => selectedRoleId = r.ClientTypeId" />
                                 <span>@r.Name</span>
                             </label>
                         }
@@ -118,10 +118,10 @@
     private string saveMessage = string.Empty;
     private string searchTerm = string.Empty;
 
-    private List<Role> roles = new();
+    private List<ClientType> roles = new();
     private List<AppUser> users = new();
     private AppUser? selectedUser;
-    private HashSet<int> selectedRoleIds = new();
+    private int? selectedRoleId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -131,31 +131,33 @@
     private async Task LoadData()
     {
         await using var db = await DbFactory.CreateDbContextAsync();
-        roles = await db.Roles.OrderBy(r => r.Name).ToListAsync();
+        roles = await db.ClientTypes.OrderBy(r => r.Name).ToListAsync();
         users = await db.AppUsers
-            .Include(u => u.UserRoles)
-            .ThenInclude(ur => ur.Role)
+            .Include(u => u.Client)
+            .ThenInclude(c => c!.ClientType)
             .OrderBy(u => u.Email)
             .ToListAsync();
+        selectedUser = users.FirstOrDefault(u => u.UserId == selectedUser?.UserId);
+        selectedRoleId = selectedUser?.Client?.ClientTypeId;
     }
 
     private async Task CreateRole()
     {
-        if (string.IsNullOrWhiteSpace(newRoleName))
+        var name = newRoleName.Trim();
+        if (name.Length == 0)
         {
             createMessage = "Voer een rolnaam in";
             return;
         }
 
         await using var db = await DbFactory.CreateDbContextAsync();
-        var name = newRoleName.Trim();
-        if (await db.Roles.AnyAsync(r => r.Name == name))
+        if (await db.ClientTypes.AnyAsync(r => r.Name == name))
         {
             createMessage = "Rol bestaat al";
             return;
         }
 
-        db.Roles.Add(new Role { Name = name });
+        db.ClientTypes.Add(new ClientType { Name = name });
         await db.SaveChangesAsync();
         newRoleName = string.Empty;
         createMessage = "Aangemaakt";
@@ -165,36 +167,22 @@
     private async Task DeleteRole(int roleId)
     {
         await using var db = await DbFactory.CreateDbContextAsync();
-        var role = await db.Roles.FindAsync(roleId);
-        if (role == null) return;
-        var hasUsers = await db.UserRoles.AnyAsync(ur => ur.RoleId == roleId);
-        if (hasUsers)
+        if (await db.Clients.AnyAsync(c => c.ClientTypeId == roleId))
         {
             createMessage = "Rol kan niet worden verwijderd omdat deze nog is toegewezen.";
             return;
         }
-        db.Roles.Remove(role);
-        await db.SaveChangesAsync();
+
+        await db.ClientTypes.Where(r => r.ClientTypeId == roleId).ExecuteDeleteAsync();
         createMessage = "Rol verwijderd";
         await LoadData();
-        if (selectedUser != null)
-        {
-            selectedUser = users.FirstOrDefault(x => x.UserId == selectedUser.UserId);
-            if (selectedUser != null) selectedRoleIds = new HashSet<int>(selectedUser.UserRoles.Select(ur => ur.RoleId));
-        }
     }
 
     private void SelectUser(AppUser u)
     {
         selectedUser = u;
-        selectedRoleIds = new HashSet<int>(u.UserRoles.Select(ur => ur.RoleId));
+        selectedRoleId = u.Client?.ClientTypeId;
         saveMessage = string.Empty;
-    }
-
-    private void ToggleRole(int roleId, bool add)
-    {
-        if (add) selectedRoleIds.Add(roleId);
-        else selectedRoleIds.Remove(roleId);
     }
 
     private async Task Save()
@@ -204,46 +192,31 @@
         try
         {
             await using var db = await DbFactory.CreateDbContextAsync();
-            var user = await db.AppUsers.Include(u => u.UserRoles).FirstOrDefaultAsync(u => u.UserId == selectedUser.UserId);
+            var user = await db.AppUsers.Include(u => u.Client).FirstOrDefaultAsync(u => u.UserId == selectedUser.UserId);
             if (user == null)
             {
                 saveMessage = "Gebruiker bestaat niet meer.";
-                await LoadData();
                 selectedUser = null;
+                await LoadData();
                 return;
             }
 
-            foreach (var rid in selectedRoleIds)
+            if (selectedRoleId != null && !await db.ClientTypes.AnyAsync(r => r.ClientTypeId == selectedRoleId))
             {
-                if (!await db.Roles.AnyAsync(r => r.Id == rid))
-                {
-                    saveMessage = "Ongeldige rollen kunnen niet worden toegewezen.";
-                    return;
-                }
+                saveMessage = "Ongeldige rol kan niet worden toegewezen.";
+                return;
             }
 
-            db.UserRoles.RemoveRange(user.UserRoles);
-            foreach (var rid in selectedRoleIds.Distinct())
-            {
-                db.UserRoles.Add(new UserRole { UserId = user.UserId, RoleId = rid });
-            }
+            user.Client ??= new Client { FirstName = user.FirstName, LastName = user.LastName };
+            user.Client.ClientTypeId = selectedRoleId;
 
             await db.SaveChangesAsync();
-            saveMessage = "Rollen succesvol gewijzigd.";
-            await LoadData();
-            selectedUser = users.FirstOrDefault(x => x.UserId == selectedUser.UserId);
-            if (selectedUser != null) selectedRoleIds = new HashSet<int>(selectedUser.UserRoles.Select(ur => ur.RoleId));
+            saveMessage = "Rol succesvol gewijzigd.";
         }
         catch
         {
-            saveMessage = "Er is een fout opgetreden tijdens het opslaan. De eerder opgeslagen rollen zijn behouden.";
-            await LoadData();
-            if (selectedUser != null)
-            {
-                selectedUser = users.FirstOrDefault(x => x.UserId == selectedUser.UserId);
-                if (selectedUser != null) selectedRoleIds = new HashSet<int>(selectedUser.UserRoles.Select(ur => ur.RoleId));
-            }
+            saveMessage = "Er is een fout opgetreden tijdens het opslaan. De eerder opgeslagen rol is behouden.";
         }
+        await LoadData();
     }
-
 }
