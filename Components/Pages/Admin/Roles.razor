@@ -3,7 +3,6 @@
 @attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
 @using Microsoft.EntityFrameworkCore
 @using tui.Data
-@using tui.Models
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 
 <PageTitle>Rollen</PageTitle>
@@ -15,9 +14,9 @@
 
 <h2>Rollen</h2>
 <ul>
-    @foreach (var role in roles)
+    @foreach (var r in roles)
     {
-        <li>@role.Name (Id: @role.Id)</li>
+        <li>@r.Name (Id: @r.Id) <button @onclick="() => DeleteRole(r.Id)">Verwijderen</button></li>
     }
 </ul>
 
@@ -115,6 +114,28 @@
         newRoleName = string.Empty;
         createMessage = "Aangemaakt";
         await LoadData();
+    }
+
+    private async Task DeleteRole(int roleId)
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        var role = await db.Roles.FindAsync(roleId);
+        if (role == null) return;
+        var hasUsers = await db.UserRoles.AnyAsync(ur => ur.RoleId == roleId);
+        if (hasUsers)
+        {
+            createMessage = "Rol kan niet worden verwijderd omdat deze nog is toegewezen.";
+            return;
+        }
+        db.Roles.Remove(role);
+        await db.SaveChangesAsync();
+        createMessage = "Rol verwijderd";
+        await LoadData();
+        if (selectedUser != null)
+        {
+            selectedUser = users.FirstOrDefault(x => x.UserId == selectedUser.UserId);
+            if (selectedUser != null) selectedRoleIds = new HashSet<int>(selectedUser.UserRoles.Select(ur => ur.RoleId));
+        }
     }
 
     private void SelectUser(AppUser u)
