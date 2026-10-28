@@ -23,57 +23,60 @@
 
 <h2>Rol toewijzen aan gebruiker</h2>
 <div>
-    Gebruiker:
-    <select @bind="selectedUserId">
-        <option value="0">-- selecteer gebruiker --</option>
-        @foreach (var u in users)
-        {
-            <option value="@u.UserId">@u.Email (@u.FirstName @u.LastName)</option>
-        }
-    </select>
+    Zoeken op e-mailadres of naam: <input type="text" @bind="searchTerm" @bind:event="oninput"/>
 </div>
-<div>
-    Rol:
-    <select @bind="selectedRoleId">
-        <option value="0">-- selecteer rol --</option>
-        @foreach (var r in roles)
-        {
-            <option value="@r.Id">@r.Name</option>
-        }
-    </select>
-</div>
-<button @onclick="AssignRole">Toewijzen</button>
-<p>@assignMessage</p>
 
-<h2>Gebruikersrollen</h2>
-<table>
-    <thead>
-        <tr><th>Gebruiker</th><th>Rollen</th></tr>
-    </thead>
-    <tbody>
-        @foreach (var u in usersWithRoles)
+@if (!string.IsNullOrWhiteSpace(searchTerm))
+{
+    <h2>Gebruikers</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>E-mailadres</th><th>Naam</th><th>Rollen</th><th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var u in users.Where(x => x.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || (x.FirstName + " " + x.LastName).Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
         {
             <tr>
                 <td>@u.Email</td>
+                <td>@u.FirstName @u.LastName</td>
+                <td>@string.Join(", ", u.UserRoles.Select(ur => ur.Role.Name))</td>
                 <td>
-                    @string.Join(", ", u.UserRoles.Select(ur => ur.Role.Name))
+                    <button @onclick="() => SelectUser(u)">Selecteren</button>
                 </td>
             </tr>
         }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+}
+
+@if (selectedUser != null)
+{
+    <h2>Rollen toewijzen aan @selectedUser.Email</h2>
+    @foreach (var r in roles)
+    {
+        <label>
+            <input type="checkbox" checked="@selectedRoleIds.Contains(r.Id)" @onchange="e => ToggleRole(r.Id, (bool)(e.Value ?? false))"/>
+            @r.Name
+        </label>
+        <br/>
+    }
+
+    <button @onclick="Save">Opslaan</button>
+    <p>@saveMessage</p>
+}
 
 @code {
     private string newRoleName = string.Empty;
     private string createMessage = string.Empty;
-    private string assignMessage = string.Empty;
+    private string saveMessage = string.Empty;
+    private string searchTerm = string.Empty;
 
     private List<Role> roles = new();
     private List<AppUser> users = new();
-    private List<AppUser> usersWithRoles = new();
-
-    private int selectedUserId;
-    private int selectedRoleId;
+    private AppUser? selectedUser;
+    private HashSet<int> selectedRoleIds = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -84,12 +87,11 @@
     {
         await using var db = await DbFactory.CreateDbContextAsync();
         roles = await db.Roles.OrderBy(r => r.Name).ToListAsync();
-        users = await db.AppUsers.OrderBy(u => u.Email).ToListAsync();
-        usersWithRoles = await db.AppUsers
-        .Include(u => u.UserRoles)
-        .ThenInclude(ur => ur.Role)
-        .OrderBy(u => u.Email)
-        .ToListAsync();
+        users = await db.AppUsers
+            .Include(u => u.UserRoles)
+            .ThenInclude(ur => ur.Role)
+            .OrderBy(u => u.Email)
+            .ToListAsync();
     }
 
     private async Task CreateRole()
@@ -107,6 +109,7 @@
             createMessage = "Rol bestaat al";
             return;
         }
+
         db.Roles.Add(new Role { Name = name });
         await db.SaveChangesAsync();
         newRoleName = string.Empty;
@@ -114,24 +117,66 @@
         await LoadData();
     }
 
-    private async Task AssignRole()
+    private void SelectUser(AppUser u)
     {
-        if (selectedUserId == 0 || selectedRoleId == 0)
-        {
-            assignMessage = "Selecteer een gebruiker en een rol";
-            return;
-        }
-
-        await using var db = await DbFactory.CreateDbContextAsync();
-        var exists = await db.UserRoles.AnyAsync(ur => ur.UserId == selectedUserId && ur.RoleId == selectedRoleId);
-        if (exists)
-        {
-            assignMessage = "Al toegewezen";
-            return;
-        }
-        db.UserRoles.Add(new UserRole { UserId = selectedUserId, RoleId = selectedRoleId });
-        await db.SaveChangesAsync();
-        assignMessage = "Toegewezen";
-        await LoadData();
+        selectedUser = u;
+        selectedRoleIds = new HashSet<int>(u.UserRoles.Select(ur => ur.RoleId));
+        saveMessage = string.Empty;
     }
+
+    private void ToggleRole(int roleId, bool add)
+    {
+        if (add) selectedRoleIds.Add(roleId);
+        else selectedRoleIds.Remove(roleId);
+    }
+
+    private async Task Save()
+    {
+        if (selectedUser == null) return;
+        saveMessage = string.Empty;
+        try
+        {
+            await using var db = await DbFactory.CreateDbContextAsync();
+            var user = await db.AppUsers.Include(u => u.UserRoles).FirstOrDefaultAsync(u => u.UserId == selectedUser.UserId);
+            if (user == null)
+            {
+                saveMessage = "Gebruiker bestaat niet meer.";
+                await LoadData();
+                selectedUser = null;
+                return;
+            }
+
+            foreach (var rid in selectedRoleIds)
+            {
+                if (!await db.Roles.AnyAsync(r => r.Id == rid))
+                {
+                    saveMessage = "Ongeldige rollen kunnen niet worden toegewezen.";
+                    return;
+                }
+            }
+
+            db.UserRoles.RemoveRange(user.UserRoles);
+            foreach (var rid in selectedRoleIds.Distinct())
+            {
+                db.UserRoles.Add(new UserRole { UserId = user.UserId, RoleId = rid });
+            }
+
+            await db.SaveChangesAsync();
+            saveMessage = "Rollen succesvol gewijzigd.";
+            await LoadData();
+            selectedUser = users.FirstOrDefault(x => x.UserId == selectedUser.UserId);
+            if (selectedUser != null) selectedRoleIds = new HashSet<int>(selectedUser.UserRoles.Select(ur => ur.RoleId));
+        }
+        catch
+        {
+            saveMessage = "Er is een fout opgetreden tijdens het opslaan. De eerder opgeslagen rollen zijn behouden.";
+            await LoadData();
+            if (selectedUser != null)
+            {
+                selectedUser = users.FirstOrDefault(x => x.UserId == selectedUser.UserId);
+                if (selectedUser != null) selectedRoleIds = new HashSet<int>(selectedUser.UserRoles.Select(ur => ur.RoleId));
+            }
+        }
+    }
+
 }
