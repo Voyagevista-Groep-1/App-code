@@ -19,7 +19,7 @@ services:
       retries: 3
 
   tui:
-    image: ghcr.io/incorporated-inc-organization-solutions/tui:main
+    image: ghcr.io/voyagevista-groep-1/app-code:main
     # build: .
     container_name: tui
     restart: unless-stopped

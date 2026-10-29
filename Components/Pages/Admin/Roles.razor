@@ -1,0 +1,222 @@
+@page "/admin/roles"
+@layout AdminLayout
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
+@using Microsoft.EntityFrameworkCore
+@using tui.Data
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+
+<PageTitle>Rollen</PageTitle>
+
+<div class="roles-page">
+    <div class="roles-grid">
+        <section class="roles-card roles-overview">
+            <div class="card-heading">
+                <div>
+                    <h1>Rollen</h1>
+                    <p>Geconfigureerde rollen en gekoppelde gebruikers</p>
+                </div>
+                <span class="role-count">@roles.Count rollen</span>
+            </div>
+
+            <div class="create-role">
+                <input aria-label="Nieuwe rolnaam" placeholder="Nieuwe rolnaam..." @bind="newRoleName" />
+                <button class="button button-primary" @onclick="CreateRole">Toevoegen</button>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(createMessage))
+            {
+                <p class="feedback">@createMessage</p>
+            }
+
+            <div class="role-list">
+                @foreach (var r in roles)
+                {
+                    <div class="role-row">
+                        <div>
+                            <strong>@r.Name</strong>
+                            <small>ID: @r.ClientTypeId</small>
+                        </div>
+                        <button class="button button-danger" @onclick="() => DeleteRole(r.ClientTypeId)">Verwijderen</button>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <section class="roles-card assignment-card">
+            <div class="card-heading">
+                <div>
+                    <h2>Rol toewijzen</h2>
+                    <p>Koppel rollen aan een gebruiker</p>
+                </div>
+                @if (selectedUser != null)
+                {
+                    <span class="selected-badge">Geselecteerd</span>
+                }
+            </div>
+
+            <div class="user-search">
+                <input aria-label="Zoek gebruiker" placeholder="Zoek op e-mailadres of naam..." type="text" @bind="searchTerm" @bind:event="oninput" />
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                <div class="user-results">
+                    <h3>Gebruikers</h3>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>E-mailadres</th><th>Naam</th><th>Rollen</th><th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var u in users.Where(x => x.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || (x.FirstName + " " + x.LastName).Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                <tr>
+                                    <td>@u.Email</td>
+                                    <td>@u.FirstName @u.LastName</td>
+                                    <td>@u.Client?.ClientType?.Name</td>
+                                    <td><button class="button button-light" @onclick="() => SelectUser(u)">Selecteren</button></td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+
+            @if (selectedUser != null)
+            {
+                <div class="selected-user">
+                    <div class="selected-user-heading">
+                        <div>
+                            <h3>Rol voor @selectedUser.Email</h3>
+                            <p>Selecteer de rol van deze gebruiker.</p>
+                        </div>
+                    </div>
+                    <div class="role-options">
+                        @foreach (var r in roles)
+                        {
+                            <label class="role-option">
+                                <input type="radio" name="role" checked="@(selectedRoleId == r.ClientTypeId)" @onchange="() => selectedRoleId = r.ClientTypeId" />
+                                <span>@r.Name</span>
+                            </label>
+                        }
+                    </div>
+                    <div class="save-actions">
+                        <button class="button button-primary" @onclick="Save">Opslaan</button>
+                        <p class="feedback">@saveMessage</p>
+                    </div>
+                </div>
+            }
+        </section>
+    </div>
+</div>
+
+@code {
+    private string newRoleName = string.Empty;
+    private string createMessage = string.Empty;
+    private string saveMessage = string.Empty;
+    private string searchTerm = string.Empty;
+
+    private List<ClientType> roles = new();
+    private List<AppUser> users = new();
+    private AppUser? selectedUser;
+    private int? selectedRoleId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        roles = await db.ClientTypes.OrderBy(r => r.Name).ToListAsync();
+        users = await db.AppUsers
+            .Include(u => u.Client)
+            .ThenInclude(c => c!.ClientType)
+            .OrderBy(u => u.Email)
+            .ToListAsync();
+        selectedUser = users.FirstOrDefault(u => u.UserId == selectedUser?.UserId);
+        selectedRoleId = selectedUser?.Client?.ClientTypeId;
+    }
+
+    private async Task CreateRole()
+    {
+        var name = newRoleName.Trim();
+        if (name.Length == 0)
+        {
+            createMessage = "Voer een rolnaam in";
+            return;
+        }
+
+        await using var db = await DbFactory.CreateDbContextAsync();
+        if (await db.ClientTypes.AnyAsync(r => r.Name == name))
+        {
+            createMessage = "Rol bestaat al";
+            return;
+        }
+
+        db.ClientTypes.Add(new ClientType { Name = name });
+        await db.SaveChangesAsync();
+        newRoleName = string.Empty;
+        createMessage = "Aangemaakt";
+        await LoadData();
+    }
+
+    private async Task DeleteRole(int roleId)
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        if (await db.Clients.AnyAsync(c => c.ClientTypeId == roleId))
+        {
+            createMessage = "Rol kan niet worden verwijderd omdat deze nog is toegewezen.";
+            return;
+        }
+
+        await db.ClientTypes.Where(r => r.ClientTypeId == roleId).ExecuteDeleteAsync();
+        createMessage = "Rol verwijderd";
+        await LoadData();
+    }
+
+    private void SelectUser(AppUser u)
+    {
+        selectedUser = u;
+        selectedRoleId = u.Client?.ClientTypeId;
+        saveMessage = string.Empty;
+    }
+
+    private async Task Save()
+    {
+        if (selectedUser == null) return;
+        saveMessage = string.Empty;
+        try
+        {
+            await using var db = await DbFactory.CreateDbContextAsync();
+            var user = await db.AppUsers.Include(u => u.Client).FirstOrDefaultAsync(u => u.UserId == selectedUser.UserId);
+            if (user == null)
+            {
+                saveMessage = "Gebruiker bestaat niet meer.";
+                selectedUser = null;
+                await LoadData();
+                return;
+            }
+
+            if (selectedRoleId != null && !await db.ClientTypes.AnyAsync(r => r.ClientTypeId == selectedRoleId))
+            {
+                saveMessage = "Ongeldige rol kan niet worden toegewezen.";
+                return;
+            }
+
+            user.Client ??= new Client { FirstName = user.FirstName, LastName = user.LastName };
+            user.Client.ClientTypeId = selectedRoleId;
+
+            await db.SaveChangesAsync();
+            saveMessage = "Rol succesvol gewijzigd.";
+        }
+        catch
+        {
+            saveMessage = "Er is een fout opgetreden tijdens het opslaan. De eerder opgeslagen rol is behouden.";
+        }
+        await LoadData();
+    }
+}
