@@ -253,6 +253,7 @@
     justify-content: center;
     align-items: flex-start;
     padding: 220px 24px 24px;
+    animation: vv-fade 0.2s ease-out both;
 }
 
 .div-9 {
@@ -265,6 +266,7 @@
     flex-direction: column;
     gap: 16px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    animation: vv-fade 0.2s ease-out both;
 }
 
 .h2-3 {

@@ -26,6 +26,7 @@
     justify-content: center;
     font-size: 34px;
     font-weight: 700;
+    animation: vv-fade 0.3s ease-out 0.05s both;
 }
 
 .h1-1 {

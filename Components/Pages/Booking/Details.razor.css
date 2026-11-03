@@ -276,4 +276,5 @@
 .field-error {
     color: var(--danger);
     font-weight: 500;
+    animation: vv-fade 0.2s ease-out both;
 }
