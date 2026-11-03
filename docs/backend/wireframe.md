@@ -79,3 +79,16 @@ sequenceDiagram
   T-->>P: ticketId
   P-->>C: confirmation
 ```
+
+## Service methods
+
+| Service          | Methods                                                                                                                                            |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BookingService` | `createBooking(clientId, tripId, travelers)` → `bookingId`<br>`cancelBooking(clientId, bookingId, reason)` → summary<br>`onInvoicePaid(bookingId)` |
+| `PricingService` | `quote(tripId, travelers)` → quote                                                                                                                 |
+| `InvoiceService` | `createInvoices(booking)`<br>`getInvoice(invoiceId)`<br>`markPaid(invoiceId)`<br>`voidUnpaid(bookingId)`<br>`createCreditNote(bookingId, amount)`  |
+| `PaymentService` | `takePayment(clientId, invoiceId)` → receipt<br>`refund(bookingId, amount)`                                                                        |
+| `TicketService`  | `createTicket(clientId, category, text, bookingId?)` → `ticketId`                                                                                  |
+| `SlaService`     | `resolveSla(category, bookingId?)` → deadline                                                                                                      |
+
+`ClientService` and `TripService` aren't used in these flows.
