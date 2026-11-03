@@ -1,0 +1,45 @@
+@page "/boeken/bevestiging"
+
+<PageTitle>VoyageVista – Boeking bevestigd</PageTitle>
+
+@@<ConfirmHeader />@@
+
+<main style="max-width: 880px; margin: 0 auto; padding: 56px 32px 72px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px">
+<span aria-hidden="true" style="width: 72px; height: 72px; border-radius: 50%; background: #E3F4EA; color: #1D5C3A; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 700">✓</span>
+<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 40px">Je reis naar Mars is geboekt!</h1>
+<p style="margin: 0; color: #55607A; font-size: 17px">Boekingsnummer <strong style="color: #16163F">[VV-000000]</strong> · bevestiging verstuurd naar [E-MAILADRES]</p>
+</div>
+
+<section style="border: 1px solid #E3E7F0; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-size: 20px">Wat gebeurt er nu?</h2>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px">
+<li style="display: flex; gap: 14px; align-items: flex-start"><span style="width: 32px; height: 32px; flex: none; border-radius: 50%; background: #1D5C3A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">✓</span><span><strong>Betaling ontvangen</strong><br><span style="font-size: 14px; color: #55607A">Factuur staat in je account en is gemaild.</span></span></li>
+<li style="display: flex; gap: 14px; align-items: flex-start"><span style="width: 32px; height: 32px; flex: none; border-radius: 50%; background: #5A3FD1; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">2</span><span><strong>Gezondheidscheck plannen</strong><br><span style="font-size: 14px; color: #55607A">Uiterlijk [DATUM] – je krijgt een uitnodiging.</span></span></li>
+<li style="display: flex; gap: 14px; align-items: flex-start"><span style="width: 32px; height: 32px; flex: none; border-radius: 50%; border: 2px solid #8C95AD; color: #55607A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">3</span><span><strong>Reisdocumenten</strong><br><span style="font-size: 14px; color: #55607A">[X] weken voor vertrek in Mijn reizen.</span></span></li>
+<li style="display: flex; gap: 14px; align-items: flex-start"><span style="width: 32px; height: 32px; flex: none; border-radius: 50%; border: 2px solid #8C95AD; color: #55607A; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">4</span><span><strong>Vertrek</strong><br><span style="font-size: 14px; color: #55607A">[DATUM] vanaf [LANCEERBASIS]</span></span></li>
+</ol>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center">
+<a href="/mijn-reizen" style="background: #5A3FD1; color: #FFFFFF; text-decoration: none; padding: 14px 22px; border-radius: 10px; font-weight: 600">Naar mijn reizen</a>
+<button type="button" style="background: #FFFFFF; border: 1px solid #C9D1E3; color: #16163F; padding: 14px 22px; border-radius: 10px; font-weight: 600; font-family: inherit; font-size: 15px">Zet in agenda</button>
+<button type="button" style="background: #FFFFFF; border: 1px solid #C9D1E3; color: #16163F; padding: 14px 22px; border-radius: 10px; font-weight: 600; font-family: inherit; font-size: 15px">Deel je reis</button>
+</div>
+
+<section style="background: #EEF3FB; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 18px">Hoe makkelijk was het boeken?</h2>
+<div role="group" aria-label="Beoordeling 1 tot 5" style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" style="width: 48px; height: 48px; border-radius: 10px; border: 1px solid #C9D1E3; background: #FFFFFF; font-weight: 700; font-family: inherit; font-size: 16px; color: #16163F">1</button>
+<button type="button" style="width: 48px; height: 48px; border-radius: 10px; border: 1px solid #C9D1E3; background: #FFFFFF; font-weight: 700; font-family: inherit; font-size: 16px; color: #16163F">2</button>
+<button type="button" style="width: 48px; height: 48px; border-radius: 10px; border: 1px solid #C9D1E3; background: #FFFFFF; font-weight: 700; font-family: inherit; font-size: 16px; color: #16163F">3</button>
+<button type="button" style="width: 48px; height: 48px; border-radius: 10px; border: 1px solid #C9D1E3; background: #FFFFFF; font-weight: 700; font-family: inherit; font-size: 16px; color: #16163F">4</button>
+<button type="button" style="width: 48px; height: 48px; border-radius: 10px; border: 1px solid #C9D1E3; background: #FFFFFF; font-weight: 700; font-family: inherit; font-size: 16px; color: #16163F">5</button>
+</div>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Toelichting (optioneel)<textarea rows="2" style="border: 1px solid #C9D1E3; border-radius: 10px; padding: 10px 12px; font-family: inherit; font-size: 15px; resize: vertical"></textarea></label>
+</section>
+</main>
+
+
+@code {
+}

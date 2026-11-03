@@ -1,0 +1,107 @@
+@page "/bestemmingen"
+
+<PageTitle>VoyageVista – Zoekresultaten</PageTitle>
+
+@@<SiteHeader Active="true" />@@
+
+<div style="background: #EEF3FB">
+<div style="max-width: 1280px; margin: 0 auto; padding: 16px 32px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 14px">
+<span style="color: #55607A">Je zoekt:</span>
+<span style="background: #FFFFFF; border: 1px solid #C9D1E3; border-radius: 999px; padding: 8px 14px">Alle planeten</span>
+<span style="background: #FFFFFF; border: 1px solid #C9D1E3; border-radius: 999px; padding: 8px 14px">[DATUM]</span>
+<span style="background: #FFFFFF; border: 1px solid #C9D1E3; border-radius: 999px; padding: 8px 14px">2 reizigers</span>
+<span style="background: #FFFFFF; border: 1px solid #C9D1E3; border-radius: 999px; padding: 8px 14px">Alle reisvormen</span>
+<a href="/" style="font-weight: 600; padding: 8px">Zoekopdracht wijzigen</a>
+</div>
+</div>
+
+<main style="max-width: 1280px; margin: 0 auto; padding: 32px; display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+
+<aside aria-label="Filters" style="flex: 1 1 260px; max-width: 300px; border: 1px solid #E3E7F0; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 22px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<h2 style="margin: 0; font-size: 18px">Filters</h2>
+<button type="button" style="background: none; border: 0; color: #5A3FD1; font-weight: 600; font-size: 14px; font-family: inherit; padding: 8px">Wis alles</button>
+</div>
+<fieldset style="border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 15px">
+<legend style="font-weight: 700; font-size: 14px; margin-bottom: 8px">Bestemming</legend>
+<label style="display: flex; gap: 8px"><input type="checkbox" checked> Mars</label>
+<label style="display: flex; gap: 8px"><input type="checkbox"> Saturnus</label>
+<label style="display: flex; gap: 8px"><input type="checkbox"> Pluto</label>
+<label style="display: flex; gap: 8px"><input type="checkbox"> Venus</label>
+<span style="font-size: 13px; color: #55607A">+ nieuwe planeten uit de catalogus</span>
+</fieldset>
+<fieldset style="border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 15px">
+<legend style="font-weight: 700; font-size: 14px; margin-bottom: 8px">Reisvorm</legend>
+<label style="display: flex; gap: 8px"><input type="checkbox"> Raket</label>
+<label style="display: flex; gap: 8px"><input type="checkbox"> Teleportatie</label>
+<label style="display: flex; gap: 8px"><input type="checkbox"> Vliegend cruiseschip</label>
+<label style="display: flex; gap: 8px"><input type="checkbox"> Virtual Reality Experience</label>
+</fieldset>
+<fieldset style="border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+<legend style="font-weight: 700; font-size: 14px; margin-bottom: 8px">Prijs per persoon</legend>
+<div style="display: flex; gap: 8px">
+<label style="flex: 1; display: flex; flex-direction: column; gap: 4px">Min<input type="number" placeholder="€" style="height: 44px; border: 1px solid #C9D1E3; border-radius: 8px; padding: 0 10px; font-family: inherit; min-width: 0"></label>
+<label style="flex: 1; display: flex; flex-direction: column; gap: 4px">Max<input type="number" placeholder="€" style="height: 44px; border: 1px solid #C9D1E3; border-radius: 8px; padding: 0 10px; font-family: inherit; min-width: 0"></label>
+</div>
+</fieldset>
+<fieldset style="border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 15px">
+<legend style="font-weight: 700; font-size: 14px; margin-bottom: 8px">Reisduur</legend>
+<label style="display: flex; gap: 8px"><input type="radio" name="duur"> Dagtrip / VR</label>
+<label style="display: flex; gap: 8px"><input type="radio" name="duur"> 2–7 dagen</label>
+<label style="display: flex; gap: 8px"><input type="radio" name="duur"> 8+ dagen</label>
+</fieldset>
+<label style="display: flex; gap: 8px; font-size: 15px; font-weight: 600"><input type="checkbox" checked> Alleen beschikbare reizen</label>
+</aside>
+
+<section style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 28px">[AANTAL] reizen gevonden</h1>
+<label style="display: flex; gap: 8px; align-items: center; font-size: 14px; font-weight: 600">Sorteer op
+<select style="height: 44px; border: 1px solid #C9D1E3; border-radius: 10px; padding: 0 10px; font-family: inherit; font-size: 14px; background: #FFFFFF; color: #16163F"><option>Aanbevolen</option><option>Prijs laag–hoog</option><option>Reisduur</option><option>Vertrekdatum</option></select></label>
+</div>
+
+@foreach (var r in Reizen) {
+<article style="border: 1px solid #E3E7F0; border-radius: 16px; overflow: hidden; display: flex; flex-wrap: wrap">
+<div style="flex: 1 1 240px; min-height: 180px; background: #EEF3FB; display: flex; align-items: center; justify-content: center; color: #55607A; font-size: 14px">Afbeelding: @(r.Planeet)</div>
+<div style="flex: 2 1 320px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; font-weight: 600">
+<span style="background: #E7DFFB; color: #3F2A9E; padding: 4px 10px; border-radius: 999px">@(r.Planeet)</span>
+<span style="background: #DCEBFB; color: #1D3F73; padding: 4px 10px; border-radius: 999px">@(r.Vorm)</span>
+<span style="background: #F1F3F8; color: #3A3F5C; padding: 4px 10px; border-radius: 999px">@(r.Duur)</span>
+</div>
+<h2 style="margin: 0; font-size: 20px">@(r.Titel)</h2>
+<p style="margin: 0; color: #55607A; font-size: 14px; line-height: 1.5">[Korte productomschrijving uit gestandaardiseerde productdata]</p>
+<span style="font-size: 13px; font-weight: 600; color: #1D5C3A">@(r.Status)</span>
+</div>
+<div style="flex: 1 1 200px; padding: 20px; border-left: 1px solid #E3E7F0; display: flex; flex-direction: column; justify-content: center; gap: 10px">
+<span style="font-size: 13px; color: #55607A">vanaf</span>
+<span style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700">[PRIJS]</span>
+<span style="font-size: 12px; color: #55607A">p.p., actueel bijgewerkt</span>
+<a href="/reis" style="background: #5A3FD1; color: #FFFFFF; text-decoration: none; text-align: center; padding: 12px; border-radius: 10px; font-weight: 600">Bekijk reis</a>
+</div>
+</article>
+}
+
+<div style="background: #EEF3FB; border-radius: 16px; padding: 20px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between">
+<div>
+<p style="margin: 0; font-weight: 700">Niet gevonden wat je zoekt?</p>
+<p style="margin: 4px 0 0; font-size: 14px; color: #3A3F5C">Bekijk alternatieven: andere data, reisvorm of vergelijkbare bestemming.</p>
+</div>
+<a href="/bestemmingen" style="border: 1px solid #5A3FD1; color: #5A3FD1; text-decoration: none; padding: 12px 18px; border-radius: 10px; font-weight: 600">Toon alternatieven</a>
+</div>
+</section>
+</main>
+
+
+@code {
+    private record ReizenItem(string Titel, string Planeet, string Vorm, string Duur, string Status);
+
+    private static readonly ReizenItem[] Reizen =
+    [
+        new("Mars Basecamp Expeditie", "Mars", "Raket", "7 dagen", "Beschikbaar"),
+        new("Saturnus Ringencruise", "Saturnus", "Vliegend cruiseschip", "12 dagen", "Nog [X] plekken"),
+        new("Venus Wolkenstad Weekend", "Venus", "Teleportatie", "3 dagen", "Beschikbaar"),
+        new("Pluto IJsvlakte Experience", "Pluto", "Virtual Reality Experience", "Dagtrip", "Beschikbaar"),
+    ];
+
+}
