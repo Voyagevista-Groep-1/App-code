@@ -1,0 +1,138 @@
+.main-1 {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 56px 32px 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.div-1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+}
+
+.span-1 {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--success-bg);
+    color: var(--success);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    font-weight: 700;
+}
+
+.h1-1 {
+    margin: 0;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 40px;
+}
+
+.p-1 {
+    margin: 0;
+    color: var(--muted);
+    font-size: 17px;
+}
+
+.strong-1 {
+    color: var(--ink);
+}
+
+.section-1 {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.h2-1 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.ol-1 {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.li-1 {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.span-2 {
+    width: 32px;
+    height: 32px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--success);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.span-3 {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.span-4 {
+    width: 32px;
+    height: 32px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--brand);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.span-5 {
+    width: 32px;
+    height: 32px;
+    flex: none;
+    border-radius: 50%;
+    border: 2px solid var(--subtle);
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.div-2 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.a-1 {
+    background: var(--brand);
+    color: var(--white);
+    text-decoration: none;
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+

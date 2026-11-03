@@ -1,0 +1,254 @@
+.div-1 {
+    background: var(--surface);
+}
+
+.div-2 {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    font-size: 14px;
+}
+
+.span-1 {
+    color: var(--muted);
+}
+
+.span-2 {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 14px;
+}
+
+.a-1 {
+    font-weight: 600;
+    padding: 8px;
+}
+
+.main-1 {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    align-items: flex-start;
+}
+
+.form-1 {
+    flex: 1 1 260px;
+    max-width: 300px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.div-3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.h2-1 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.a-2 {
+    font-weight: 600;
+    font-size: 14px;
+    padding: 8px;
+}
+
+.fieldset-1 {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 15px;
+}
+
+.legend-1 {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.label-1 {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.section-1 {
+    flex: 999 1 560px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.div-4 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.h1-1 {
+    margin: 0;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+}
+
+.article-1 {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.div-5 {
+    flex: 1 1 240px;
+    min-height: 180px;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.div-6 {
+    flex: 2 1 320px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.div-7 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.span-3 {
+    background: var(--brand-tint);
+    color: var(--brand-dark);
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.span-4 {
+    background: var(--info-bg);
+    color: var(--info);
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.span-5 {
+    background: var(--surface-2);
+    color: var(--text-2);
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.h2-2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.p-1 {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.span-6 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--success);
+}
+
+.div-8 {
+    flex: 1 1 200px;
+    padding: 20px;
+    border-left: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+.span-7 {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.span-8 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.span-9 {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.a-3 {
+    background: var(--brand);
+    color: var(--white);
+    text-decoration: none;
+    text-align: center;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.div-9 {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.p-2 {
+    margin: 0;
+    font-weight: 700;
+}
+
+.p-3 {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: var(--text-2);
+}
+
+.a-4 {
+    border: 1px solid var(--brand);
+    color: var(--brand);
+    text-decoration: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+

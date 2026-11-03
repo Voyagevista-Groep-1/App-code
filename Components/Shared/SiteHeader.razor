@@ -1,29 +1,29 @@
 @using System.Security.Claims
-<header style="border-bottom: 1px solid var(--line); background: var(--white)">
-<div style="max-width: 1280px; margin: 0 auto; padding: 16px 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
-<a href="/" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink)">
-<span style="width: 44px; height: 44px; border-radius: 50%; border: 2px dashed var(--brand); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--brand)">LOGO</span>
-<span style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700">VoyageVista</span>
+<header class="header-1">
+<div class="div-1">
+<a href="/" class="a-1">
+<span class="span-1">LOGO</span>
+<span class="span-2">VoyageVista</span>
 </a>
-<nav aria-label="Hoofdmenu" style="display: flex; flex-wrap: wrap; gap: 24px; font-size: 15px; font-weight: 500">
-<a href="/bestemmingen" style="color: @(Active ? "var(--brand)" : "var(--ink)"); text-decoration: none">Bestemmingen</a>
-<a href="/bestemmingen" style="color: var(--ink); text-decoration: none">Reisvormen</a>
-<a href="/bestemmingen" style="color: var(--ink); text-decoration: none">Aanbiedingen</a>
-<a href="/mijn-reizen" style="color: var(--ink); text-decoration: none">Klantenservice</a>
+<nav aria-label="Hoofdmenu" class="nav-1">
+<a href="/bestemmingen" class="a-2 @(Active ? "nav-active" : "")">Bestemmingen</a>
+<a href="/bestemmingen" class="a-2">Reisvormen</a>
+<a href="/bestemmingen" class="a-2">Aanbiedingen</a>
+<a href="/mijn-reizen" class="a-2">Klantenservice</a>
 </nav>
-<div style="display: flex; gap: 12px; align-items: center">
+<div class="div-2">
 <AuthorizeView>
 <Authorized>
-<a href="/mijn-reizen" style="color: var(--ink); text-decoration: none; font-weight: 500; padding: 12px 8px">Mijn reizen</a>
-<span style="width: 40px; height: 40px; border-radius: 50%; background: var(--brand-tint); color: var(--brand-dark); display: flex; align-items: center; justify-content: center; font-weight: 700">@context.User.FindFirst(ClaimTypes.GivenName)?.Value?[..1]</span>
-<span style="font-weight: 600">@context.User.FindFirst(ClaimTypes.GivenName)?.Value</span>
-<form method="post" action="/auth/logout" style="margin: 0">
+<a href="/mijn-reizen" class="a-3">Mijn reizen</a>
+<span class="span-3">@context.User.FindFirst(ClaimTypes.GivenName)?.Value?[..1]</span>
+<span class="span-4">@context.User.FindFirst(ClaimTypes.GivenName)?.Value</span>
+<form method="post" action="/auth/logout" class="form-1">
 <AntiforgeryToken />
-<button type="submit" style="background: none; border: 0; color: var(--brand); font-weight: 600; font-family: inherit; font-size: 15px; padding: 12px 8px; cursor: pointer">Uitloggen</button>
+<button type="submit" class="button-1">Uitloggen</button>
 </form>
 </Authorized>
 <NotAuthorized>
-<a href="/auth/login" style="background: var(--brand); color: var(--white); text-decoration: none; padding: 12px 20px; border-radius: 10px; font-weight: 600">Inloggen</a>
+<a href="/auth/login" class="a-4">Inloggen</a>
 </NotAuthorized>
 </AuthorizeView>
 </div>

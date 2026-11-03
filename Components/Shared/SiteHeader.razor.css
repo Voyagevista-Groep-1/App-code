@@ -1,0 +1,113 @@
+.header-1 {
+    border-bottom: 1px solid var(--line);
+    background: var(--white);
+}
+
+.div-1 {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px 32px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.a-1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--ink);
+}
+
+.span-1 {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px dashed var(--brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--brand);
+}
+
+.span-2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.nav-1 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.a-2 {
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.div-2 {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.a-3 {
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 12px 8px;
+}
+
+.span-3 {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--brand-tint);
+    color: var(--brand-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.span-4 {
+    font-weight: 600;
+}
+
+.form-1 {
+    margin: 0;
+}
+
+.button-1 {
+    background: none;
+    border: 0;
+    color: var(--brand);
+    font-weight: 600;
+    font-family: inherit;
+    font-size: 15px;
+    padding: 12px 8px;
+    cursor: pointer;
+}
+
+.a-4 {
+    background: var(--brand);
+    color: var(--white);
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+
+.nav-active {
+    color: var(--brand);
+}

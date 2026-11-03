@@ -4,86 +4,86 @@
 
 <SiteHeader Active="true" />
 
-<main style="max-width: 1280px; margin: 0 auto; padding: 24px 32px 64px; display: flex; flex-direction: column; gap: 24px">
-<nav aria-label="Kruimelpad" style="font-size: 14px; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap">
-<a href="/">Home</a><span>/</span><a href="/bestemmingen">Bestemmingen</a><span>/</span><span>Mars</span><span>/</span><span style="color: var(--ink)">Mars Basecamp Expeditie</span>
+<main class="main-1">
+<nav aria-label="Kruimelpad" class="nav-1">
+<a href="/">Home</a><span>/</span><a href="/bestemmingen">Bestemmingen</a><span>/</span><span>Mars</span><span>/</span><span class="span-1">Mars Basecamp Expeditie</span>
 </nav>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px">
-<div style="grid-column: span 2; min-height: 340px; background: var(--surface); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--muted)">Afbeelding: hoofdfoto bestemming</div>
-<div style="display: grid; grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 12px">
-<div style="background: var(--surface); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 14px">Afbeelding: accommodatie</div>
-<div style="background: var(--surface); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 14px">Afbeelding: activiteit</div>
+<div class="div-1">
+<div class="div-2">Afbeelding: hoofdfoto bestemming</div>
+<div class="div-3">
+<div class="div-4">Afbeelding: accommodatie</div>
+<div class="div-4">Afbeelding: activiteit</div>
 </div>
 </div>
 
-<div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
-<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
-<div style="display: flex; flex-direction: column; gap: 10px">
-<div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; font-weight: 600">
-<span style="background: var(--brand-tint); color: var(--brand-dark); padding: 4px 10px; border-radius: 999px">Mars</span>
-<span style="background: var(--surface-2); color: var(--text-2); padding: 4px 10px; border-radius: 999px">7 dagen</span>
-<span style="background: var(--surface-2); color: var(--text-2); padding: 4px 10px; border-radius: 999px">Avontuur</span>
+<div class="div-5">
+<div class="div-6">
+<div class="div-7">
+<div class="div-8">
+<span class="span-2">Mars</span>
+<span class="span-3">7 dagen</span>
+<span class="span-3">Avontuur</span>
 </div>
-<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 40px">Mars Basecamp Expeditie</h1>
-<p style="margin: 0; color: var(--muted)">[Beoordeling: X,X / 5 uit [AANTAL] reviews]</p>
+<h1 class="h1-1">Mars Basecamp Expeditie</h1>
+<p class="p-1">[Beoordeling: X,X / 5 uit [AANTAL] reviews]</p>
 </div>
 
 
-<p style="margin: 0; line-height: 1.6; color: var(--text-2)">[Productomschrijving: vastgelegd door Productontwikkeling in één standaardformaat, zodat klant, sales en klantenservice dezelfde informatie zien.]</p>
-
-<div>
-<h2 style="margin: 0 0 12px; font-size: 20px">Inbegrepen</h2>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; font-size: 15px">
-<div style="background: var(--surface); border-radius: 12px; padding: 14px">Heen- en terugreis</div>
-<div style="background: var(--surface); border-radius: 12px; padding: 14px">[X] nachten accommodatie</div>
-<div style="background: var(--surface); border-radius: 12px; padding: 14px">Ruimtepak &amp; uitrusting</div>
-<div style="background: var(--surface); border-radius: 12px; padding: 14px">Gids ter plaatse</div>
-</div>
-</div>
+<p class="p-2">[Productomschrijving: vastgelegd door Productontwikkeling in één standaardformaat, zodat klant, sales en klantenservice dezelfde informatie zien.]</p>
 
 <div>
-<h2 style="margin: 0 0 12px; font-size: 20px">Dagprogramma</h2>
-<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px">
+<h2 class="h2-1">Inbegrepen</h2>
+<div class="div-9">
+<div class="div-10">Heen- en terugreis</div>
+<div class="div-10">[X] nachten accommodatie</div>
+<div class="div-10">Ruimtepak &amp; uitrusting</div>
+<div class="div-10">Gids ter plaatse</div>
+</div>
+</div>
+
+<div>
+<h2 class="h2-1">Dagprogramma</h2>
+<ol class="ol-1">
 @foreach (var d in Dagen) {
-<li style="display: flex; gap: 16px; border: 1px solid var(--line); border-radius: 12px; padding: 14px">
-<span style="font-weight: 700; color: var(--brand); min-width: 64px">@(d.Dag)</span>
+<li class="li-1">
+<span class="span-4">@(d.Dag)</span>
 <span>@(d.Tekst)</span>
 </li>
 }
 </ol>
 </div>
 
-<div style="border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
-<div><p style="margin: 0; font-weight: 700">Vraag over deze reis?</p><p style="margin: 4px 0 0; font-size: 14px; color: var(--muted)">Je vraag komt direct bij klantenservice, gekoppeld aan deze reis.</p></div>
-<a href="/mijn-reizen" style="border: 1px solid var(--brand); color: var(--brand); text-decoration: none; padding: 12px 18px; border-radius: 10px; font-weight: 600">Stel een vraag</a>
+<div class="div-11">
+<div><p class="p-3">Vraag over deze reis?</p><p class="p-4">Je vraag komt direct bij klantenservice, gekoppeld aan deze reis.</p></div>
+<a href="/mijn-reizen" class="a-1">Stel een vraag</a>
 </div>
 </div>
 
-<form method="get" action="/boeken/samenstellen" aria-label="Boeken" style="flex: 1 1 340px; border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 8px 24px rgba(22,22,63,0.08)">
-<div><span style="font-size: 13px; color: var(--muted)">vanaf</span><p style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700">[PRIJS] <span style="font-size: 15px; font-weight: 500; color: var(--muted)">p.p.</span></p></div>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Vertrekdatum
-<select name="datum" required style="height: 48px; border: 1px solid var(--border); border-radius: 10px; padding: 0 12px; font-family: inherit; font-size: 15px; background: var(--white); color: var(--ink)"><option value="1">[DATUM 1] – beschikbaar</option><option value="2">[DATUM 2] – nog [X] plekken</option><option value="3" disabled>[DATUM 3] – vol (wachtlijst)</option></select></label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Aantal reizigers
-<input type="number" name="reizigers" value="2" min="1" max="10" step="1" required style="height: 48px; border: 1px solid var(--border); border-radius: 10px; padding: 0 12px; font-family: inherit; font-size: 15px"></label>
-<fieldset style="border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px">
-<legend style="font-size: 13px; font-weight: 600; margin-bottom: 8px">Beschikbare reisvormen</legend>
-<label style="display: flex; justify-content: space-between; gap: 8px; border: 2px solid var(--brand); border-radius: 10px; padding: 12px; font-size: 15px"><span style="display: flex; gap: 8px"><input type="radio" name="vorm" value="Raket" checked> Raket</span><span style="color: var(--muted)">inbegrepen</span></label>
-<label style="display: flex; justify-content: space-between; gap: 8px; border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 15px"><span style="display: flex; gap: 8px"><input type="radio" name="vorm" value="Teleportatie" required> Teleportatie</span><span style="color: var(--muted)">+ [PRIJS]</span></label>
-<label style="display: flex; justify-content: space-between; gap: 8px; border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 15px"><span style="display: flex; gap: 8px"><input type="radio" name="vorm" value="Vliegend cruiseschip" required> Vliegend cruiseschip</span><span style="color: var(--muted)">+ [PRIJS]</span></label>
+<form method="get" action="/boeken/samenstellen" aria-label="Boeken" class="form-1">
+<div><span class="span-5">vanaf</span><p class="p-5">[PRIJS] <span class="span-6">p.p.</span></p></div>
+<label class="label-1">Vertrekdatum
+<select name="datum" required class="select-1"><option value="1">[DATUM 1] – beschikbaar</option><option value="2">[DATUM 2] – nog [X] plekken</option><option value="3" disabled>[DATUM 3] – vol (wachtlijst)</option></select></label>
+<label class="label-1">Aantal reizigers
+<input type="number" name="reizigers" value="2" min="1" max="10" step="1" required class="input-1"></label>
+<fieldset class="fieldset-1">
+<legend class="legend-1">Beschikbare reisvormen</legend>
+<label class="label-2"><span class="span-7"><input type="radio" name="vorm" value="Raket" checked> Raket</span><span class="span-8">inbegrepen</span></label>
+<label class="label-3"><span class="span-7"><input type="radio" name="vorm" value="Teleportatie" required> Teleportatie</span><span class="span-8">+ [PRIJS]</span></label>
+<label class="label-3"><span class="span-7"><input type="radio" name="vorm" value="Vliegend cruiseschip" required> Vliegend cruiseschip</span><span class="span-8">+ [PRIJS]</span></label>
 </fieldset>
-<div style="border-top: 1px solid var(--line); padding-top: 14px; display: flex; justify-content: space-between; font-weight: 700"><span>Totaal (2 pers.)</span><span>[TOTAAL]</span></div>
-<p style="margin: 0; font-size: 12px; color: var(--muted)">Prijs en beschikbaarheid actueel per [TIJDSTIP].</p>
-<button type="submit" style="border: 0; font-family: inherit; cursor: pointer; background: var(--brand); color: var(--white); text-decoration: none; text-align: center; padding: 14px; border-radius: 10px; font-weight: 600; font-size: 16px">Reis samenstellen</button>
+<div class="div-12"><span>Totaal (2 pers.)</span><span>[TOTAAL]</span></div>
+<p class="p-6">Prijs en beschikbaarheid actueel per [TIJDSTIP].</p>
+<button type="submit" class="button-1">Reis samenstellen</button>
 </form>
 </div>
 
-<section style="display: flex; flex-direction: column; gap: 16px; padding-top: 16px">
-<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 26px">Vergelijkbare reizen</h2>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px">
-<a href="/reis" style="text-decoration: none; color: var(--ink); border: 1px solid var(--line); border-radius: 16px; padding: 16px"><div style="height: 120px; background: var(--surface); border-radius: 10px; margin-bottom: 12px"></div><strong>[Reis A]</strong><p style="margin: 4px 0 0; font-size: 14px; color: var(--muted)">vanaf [PRIJS]</p></a>
-<a href="/reis" style="text-decoration: none; color: var(--ink); border: 1px solid var(--line); border-radius: 16px; padding: 16px"><div style="height: 120px; background: var(--surface); border-radius: 10px; margin-bottom: 12px"></div><strong>[Reis B]</strong><p style="margin: 4px 0 0; font-size: 14px; color: var(--muted)">vanaf [PRIJS]</p></a>
-<a href="/reis" style="text-decoration: none; color: var(--ink); border: 1px solid var(--line); border-radius: 16px; padding: 16px"><div style="height: 120px; background: var(--surface); border-radius: 10px; margin-bottom: 12px"></div><strong>[Reis C]</strong><p style="margin: 4px 0 0; font-size: 14px; color: var(--muted)">vanaf [PRIJS]</p></a>
+<section class="section-1">
+<h2 class="h2-2">Vergelijkbare reizen</h2>
+<div class="div-13">
+<a href="/reis" class="a-2"><div class="div-14"></div><strong>[Reis A]</strong><p class="p-4">vanaf [PRIJS]</p></a>
+<a href="/reis" class="a-2"><div class="div-14"></div><strong>[Reis B]</strong><p class="p-4">vanaf [PRIJS]</p></a>
+<a href="/reis" class="a-2"><div class="div-14"></div><strong>[Reis C]</strong><p class="p-4">vanaf [PRIJS]</p></a>
 </div>
 </section>
 </main>

@@ -4,75 +4,75 @@
 
 <CheckoutHeader />
 
-<nav aria-label="Boekingsstappen" style="background: var(--surface)">
-<ol style="max-width: 1280px; margin: 0 auto; padding: 18px 32px; list-style: none; display: flex; flex-wrap: wrap; gap: 12px 28px; font-size: 14px">
-<li style="display: flex; gap: 8px; align-items: center; color: var(--success); font-weight: 600"><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--success); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px">✓</span>Reis kiezen</li>
-<li style="display: flex; gap: 8px; align-items: center; color: var(--success); font-weight: 600"><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--success); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px">✓</span>Samenstellen</li>
-<li aria-current="step" style="display: flex; gap: 8px; align-items: center; font-weight: 700"><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px">3</span>Gegevens</li>
-<li style="display: flex; gap: 8px; align-items: center; color: var(--muted)"><span style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--subtle); display: flex; align-items: center; justify-content: center; font-size: 13px">4</span>Betalen</li>
-<li style="display: flex; gap: 8px; align-items: center; color: var(--muted)"><span style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--subtle); display: flex; align-items: center; justify-content: center; font-size: 13px">5</span>Bevestiging</li>
+<nav aria-label="Boekingsstappen" class="nav-1">
+<ol class="ol-1">
+<li class="li-1"><span class="span-1">✓</span>Reis kiezen</li>
+<li class="li-1"><span class="span-1">✓</span>Samenstellen</li>
+<li aria-current="step" class="li-2"><span class="span-2">3</span>Gegevens</li>
+<li class="li-3"><span class="span-3">4</span>Betalen</li>
+<li class="li-3"><span class="span-3">5</span>Bevestiging</li>
 </ol>
 </nav>
 
-<main style="max-width: 1280px; margin: 0 auto; padding: 32px; display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
-<form aria-label="Reizigersgegevens" novalidate @onsubmit="Verder" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 28px">
-<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 32px">Wie gaan er mee?</h1>
+<main class="main-1">
+<form aria-label="Reizigersgegevens" novalidate @onsubmit="Verder" class="form-1">
+<h1 class="h1-1">Wie gaan er mee?</h1>
 
 @if (!_ingelogd) {
-<div style="background: var(--surface); border-radius: 14px; padding: 16px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+<div class="div-1">
 <span>Heb je al een account? Dan vullen we je gegevens in.</span>
-<a href="/auth/login?returnUrl=/boeken/gegevens" style="background: var(--ink); color: var(--white); text-decoration: none; padding: 12px 18px; border-radius: 10px; font-weight: 600">Inloggen</a>
+<a href="/auth/login?returnUrl=/boeken/gegevens" class="a-1">Inloggen</a>
 </div>
 }
 
 @if (_fouten.Count > 0) {
-<div role="alert" style="border: 2px solid var(--danger); background: var(--danger-bg); border-radius: 12px; padding: 14px 18px; color: var(--danger-dark); font-size: 15px"><strong>Controleer @_fouten.Count @(_fouten.Count == 1 ? "veld" : "velden").</strong> Verplichte velden zijn gemarkeerd met *.</div>
+<div role="alert" class="div-2"><strong>Controleer @_fouten.Count @(_fouten.Count == 1 ? "veld" : "velden").</strong> Verplichte velden zijn gemarkeerd met *.</div>
 }
 
-<fieldset style="border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px">
-<legend style="font-weight: 700; font-size: 18px; padding: 0 6px">Hoofdreiziger</legend>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Voornaam *<input type="text" @bind="_voornaam" name="voornaam" autocomplete="given-name" maxlength="50" required style="@Stijl("voornaam")">@Fout("voornaam")</label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Achternaam *<input type="text" @bind="_achternaam" name="achternaam" autocomplete="family-name" maxlength="50" required style="@Stijl("achternaam")">@Fout("achternaam")</label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Geboortedatum *<input type="date" @bind="_geboorte" name="geboorte" autocomplete="bday" min="1900-01-01" max="@Vandaag" required style="@Stijl("geboorte")">@Fout("geboorte")</label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">E-mailadres *<input type="email" @bind="_email" name="email" autocomplete="email" maxlength="200" required style="@Stijl("email")">@Fout("email")</label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Telefoonnummer<input type="tel" @bind="_telefoon" name="telefoon" autocomplete="tel" maxlength="20" pattern="[+0-9 ()\-]{8,20}" style="@Stijl("telefoon")">@Fout("telefoon")</label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Postcode *<input type="text" @bind="_postcode" name="postcode" autocomplete="postal-code" maxlength="7" required pattern="[1-9][0-9]{3} ?[A-Za-z]{2}" placeholder="1234 AB" style="@Stijl("postcode")">@Fout("postcode")</label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Huisnummer *<input type="text" @bind="_huisnummer" name="huisnummer" autocomplete="address-line2" maxlength="10" required pattern="[0-9]+[A-Za-z0-9 \-]*" placeholder="12" style="@Stijl("huisnummer")">@Fout("huisnummer")</label>
+<fieldset class="fieldset-1">
+<legend class="legend-1">Hoofdreiziger</legend>
+<label class="label-1">Voornaam *<input type="text" @bind="_voornaam" name="voornaam" autocomplete="given-name" maxlength="50" required class="@Klasse("voornaam")">@Fout("voornaam")</label>
+<label class="label-1">Achternaam *<input type="text" @bind="_achternaam" name="achternaam" autocomplete="family-name" maxlength="50" required class="@Klasse("achternaam")">@Fout("achternaam")</label>
+<label class="label-1">Geboortedatum *<input type="date" @bind="_geboorte" name="geboorte" autocomplete="bday" min="1900-01-01" max="@Vandaag" required class="@Klasse("geboorte")">@Fout("geboorte")</label>
+<label class="label-1">E-mailadres *<input type="email" @bind="_email" name="email" autocomplete="email" maxlength="200" required class="@Klasse("email")">@Fout("email")</label>
+<label class="label-1">Telefoonnummer<input type="tel" @bind="_telefoon" name="telefoon" autocomplete="tel" maxlength="20" pattern="[+0-9 ()\-]{8,20}" class="@Klasse("telefoon")">@Fout("telefoon")</label>
+<label class="label-1">Postcode *<input type="text" @bind="_postcode" name="postcode" autocomplete="postal-code" maxlength="7" required pattern="[1-9][0-9]{3} ?[A-Za-z]{2}" placeholder="1234 AB" class="@Klasse("postcode")">@Fout("postcode")</label>
+<label class="label-1">Huisnummer *<input type="text" @bind="_huisnummer" name="huisnummer" autocomplete="address-line2" maxlength="10" required pattern="[0-9]+[A-Za-z0-9 \-]*" placeholder="12" class="@Klasse("huisnummer")">@Fout("huisnummer")</label>
 </fieldset>
 
-<fieldset style="border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px">
-<legend style="font-weight: 700; font-size: 18px; padding: 0 6px">Reiziger 2</legend>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Voornaam *<input type="text" @bind="_voornaam2" name="voornaam2" maxlength="50" required style="@Stijl("voornaam2")">@Fout("voornaam2")</label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Achternaam *<input type="text" @bind="_achternaam2" name="achternaam2" maxlength="50" required style="@Stijl("achternaam2")">@Fout("achternaam2")</label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Geboortedatum *<input type="date" @bind="_geboorte2" name="geboorte2" min="1900-01-01" max="@Vandaag" required style="@Stijl("geboorte2")">@Fout("geboorte2")</label>
+<fieldset class="fieldset-1">
+<legend class="legend-1">Reiziger 2</legend>
+<label class="label-1">Voornaam *<input type="text" @bind="_voornaam2" name="voornaam2" maxlength="50" required class="@Klasse("voornaam2")">@Fout("voornaam2")</label>
+<label class="label-1">Achternaam *<input type="text" @bind="_achternaam2" name="achternaam2" maxlength="50" required class="@Klasse("achternaam2")">@Fout("achternaam2")</label>
+<label class="label-1">Geboortedatum *<input type="date" @bind="_geboorte2" name="geboorte2" min="1900-01-01" max="@Vandaag" required class="@Klasse("geboorte2")">@Fout("geboorte2")</label>
 </fieldset>
 
-<fieldset style="border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 15px">
-<legend style="font-weight: 700; font-size: 18px; padding: 0 6px">Gezondheid &amp; veiligheid</legend>
-<label style="display: flex; gap: 10px; align-items: flex-start"><input type="checkbox" @bind="_fit" name="fit" required> Alle reizigers verklaren fit genoeg te zijn voor deze reisvorm (verplicht bij raket) *@Fout("fit")</label>
-<a href="/reis" style="font-size: 14px">Lees de gezondheidseisen per reisvorm</a>
+<fieldset class="fieldset-2">
+<legend class="legend-1">Gezondheid &amp; veiligheid</legend>
+<label class="label-2"><input type="checkbox" @bind="_fit" name="fit" required> Alle reizigers verklaren fit genoeg te zijn voor deze reisvorm (verplicht bij raket) *@Fout("fit")</label>
+<a href="/reis" class="a-2">Lees de gezondheidseisen per reisvorm</a>
 </fieldset>
 
-<fieldset style="border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 15px">
-<legend style="font-weight: 700; font-size: 18px; padding: 0 6px">Voorkeuren (optioneel)</legend>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; max-width: 360px">Hoe heb je ons gevonden?
-<select @bind="_bron" name="bron" style="height: 48px; border: 1px solid var(--border); border-radius: 10px; padding: 0 12px; font-family: inherit; font-size: 15px; background: var(--white); color: var(--ink)"><option value="">Maak een keuze</option><option>Instagram / TikTok</option><option>Influencer</option><option>Vrienden</option><option>Nieuwsbrief</option><option>Zoekmachine</option></select></label>
-@if (!_ingelogd) {<label style="display: flex; gap: 10px; align-items: flex-start"><input type="checkbox" @bind="_account"> Account aanmaken om boekingen, facturen en vragen te bekijken</label>}
-<label style="display: flex; gap: 10px; align-items: flex-start"><input type="checkbox" @bind="_aanbiedingen"> Ik wil persoonlijke reisaanbiedingen ontvangen per e-mail</label>
+<fieldset class="fieldset-2">
+<legend class="legend-1">Voorkeuren (optioneel)</legend>
+<label class="label-3">Hoe heb je ons gevonden?
+<select @bind="_bron" name="bron" class="select-1"><option value="">Maak een keuze</option><option>Instagram / TikTok</option><option>Influencer</option><option>Vrienden</option><option>Nieuwsbrief</option><option>Zoekmachine</option></select></label>
+@if (!_ingelogd) {<label class="label-2"><input type="checkbox" @bind="_account"> Account aanmaken om boekingen, facturen en vragen te bekijken</label>}
+<label class="label-2"><input type="checkbox" @bind="_aanbiedingen"> Ik wil persoonlijke reisaanbiedingen ontvangen per e-mail</label>
 </fieldset>
 
-<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px">
-<a href="/boeken/samenstellen" style="border: 1px solid var(--border); color: var(--ink); text-decoration: none; padding: 14px 22px; border-radius: 10px; font-weight: 600">Terug</a>
-<button type="submit" style="border: 0; font-family: inherit; font-size: 16px; cursor: pointer; background: var(--brand); color: var(--white); text-decoration: none; padding: 14px 22px; border-radius: 10px; font-weight: 600">Verder naar betalen</button>
+<div class="div-3">
+<a href="/boeken/samenstellen" class="a-3">Terug</a>
+<button type="submit" class="button-1">Verder naar betalen</button>
 </div>
 </form>
 
-<aside aria-label="Jouw reis" style="flex: 1 1 320px; border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 12px">
-<h2 style="margin: 0; font-size: 18px">Jouw reis</h2>
-<p style="margin: 0; font-weight: 700">Mars Basecamp Expeditie</p>
-<p style="margin: 0; font-size: 14px; color: var(--muted)">[DATUM] · 7 dagen · 2 reizigers · Raket</p>
-<div style="border-top: 1px solid var(--line); padding-top: 12px; display: flex; justify-content: space-between; font-weight: 700; font-size: 18px"><span>Totaal</span><span>[TOTAAL]</span></div>
-<p style="margin: 0; font-size: 13px; color: var(--muted)">Je gegevens worden alleen gebruikt voor deze boeking, tenzij je hierboven toestemming geeft.</p>
+<aside aria-label="Jouw reis" class="aside-1">
+<h2 class="h2-1">Jouw reis</h2>
+<p class="p-1">Mars Basecamp Expeditie</p>
+<p class="p-2">[DATUM] · 7 dagen · 2 reizigers · Raket</p>
+<div class="div-4"><span>Totaal</span><span>[TOTAAL]</span></div>
+<p class="p-3">Je gegevens worden alleen gebruikt voor deze boeking, tenzij je hierboven toestemming geeft.</p>
 </aside>
 </main>
 
@@ -88,13 +88,9 @@
     private readonly Dictionary<string, string> _fouten = [];
 
     private static string Vandaag => DateTime.Today.ToString("yyyy-MM-dd");
-    private const string Basis = "height: 48px; border-radius: 10px; padding: 0 12px; font-size: 15px; font-family: inherit; ";
+    private string Klasse(string veld) => _fouten.ContainsKey(veld) ? "invalid" : "";
 
-    private string Stijl(string veld) => Basis + (_fouten.ContainsKey(veld) ? "border: 2px solid var(--danger)" : "border: 1px solid var(--border)");
-
-    private RenderFragment Fout(string veld) => _fouten.TryGetValue(veld, out var m)
-        ? (b => { b.OpenElement(0, "span"); b.AddAttribute(1, "style", "color: var(--danger); font-weight: 500"); b.AddContent(2, m); b.CloseElement(); })
-        : (_ => { });
+    private RenderFragment Fout(string veld) => @<text>@if (_fouten.TryGetValue(veld, out var melding)) {<span class="field-error">@melding</span>}</text>;
 
     protected override async Task OnInitializedAsync()
     {

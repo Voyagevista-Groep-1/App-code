@@ -4,98 +4,98 @@
 
 <SiteHeader />
 
-<section style="background: var(--ink); color: var(--white)">
-<div style="max-width: 1280px; margin: 0 auto; padding: 72px 32px 88px; display: flex; flex-direction: column; gap: 32px">
-<div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: center">
-<div style="flex: 1 1 520px; display: flex; flex-direction: column; gap: 16px">
-<p style="margin: 0; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-light)">Interplanetair reisplatform</p>
-<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 56px; line-height: 1.05">Boek je reis naar een andere planeet</h1>
-<p style="margin: 0; font-size: 18px; line-height: 1.5; color: var(--on-dark); max-width: 520px">[KORTE PAYOFF: wat maakt VoyageVista uniek voor reizigers van 18–30 jaar]</p>
+<section class="section-1">
+<div class="div-1">
+<div class="div-2">
+<div class="div-3">
+<p class="p-1">Interplanetair reisplatform</p>
+<h1 class="h1-1">Boek je reis naar een andere planeet</h1>
+<p class="p-2">[KORTE PAYOFF: wat maakt VoyageVista uniek voor reizigers van 18–30 jaar]</p>
 </div>
-<div style="flex: 1 1 400px; height: 280px; border: 2px dashed var(--dark-border); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--on-dark-muted); font-size: 15px">Afbeelding: hero-visual (planeet / ruimteschip)</div>
+<div class="div-4">Afbeelding: hero-visual (planeet / ruimteschip)</div>
 </div>
 
-<form aria-label="Reis zoeken" method="get" action="/bestemmingen" style="background: var(--white); color: var(--ink); border-radius: 16px; padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; align-items: end">
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Bestemming
-<select name="planeet" style="height: 48px; border: 1px solid var(--border); border-radius: 10px; padding: 0 12px; font-size: 15px; font-family: inherit; color: var(--ink); background: var(--white)">
+<form aria-label="Reis zoeken" method="get" action="/bestemmingen" class="form-1">
+<label class="label-1">Bestemming
+<select name="planeet" class="select-1">
 <option value="">Alle planeten</option><option>Mars</option><option>Saturnus</option><option>Pluto</option><option>Venus</option>
 </select></label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Vertrekdatum
-<input type="date" name="datum" required min="@DateTime.Today.ToString("yyyy-MM-dd")" style="height: 48px; border: 1px solid var(--border); border-radius: 10px; padding: 0 12px; font-size: 15px; font-family: inherit"></label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Reizigers
-<input type="number" name="reizigers" value="2" min="1" max="10" step="1" required style="height: 48px; border: 1px solid var(--border); border-radius: 10px; padding: 0 12px; font-size: 15px; font-family: inherit"></label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Reisvorm
-<select name="vorm" style="height: 48px; border: 1px solid var(--border); border-radius: 10px; padding: 0 12px; font-size: 15px; font-family: inherit; color: var(--ink); background: var(--white)">
+<label class="label-1">Vertrekdatum
+<input type="date" name="datum" required min="@DateTime.Today.ToString("yyyy-MM-dd")" class="input-1"></label>
+<label class="label-1">Reizigers
+<input type="number" name="reizigers" value="2" min="1" max="10" step="1" required class="input-1"></label>
+<label class="label-1">Reisvorm
+<select name="vorm" class="select-1">
 <option value="">Alle reisvormen</option><option>Raket</option><option>Teleportatie</option><option>Vliegend cruiseschip</option><option>Virtual Reality Experience</option>
 </select></label>
-<button type="submit" style="border: 0; font-family: inherit; cursor: pointer; height: 48px; background: var(--brand); color: var(--white); text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center">Zoek reizen</button>
+<button type="submit" class="button-1">Zoek reizen</button>
 </form>
 </div>
 </section>
 
-<section style="max-width: 1280px; margin: 0 auto; padding: 64px 32px 24px; display: flex; flex-direction: column; gap: 24px">
-<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px">
+<section class="section-2">
+<div class="div-5">
 <div>
-<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 32px">Populaire bestemmingen</h2>
-<p style="margin: 6px 0 0; color: var(--muted)">Lijst komt uit de productcatalogus – nieuwe planeten verschijnen automatisch.</p>
+<h2 class="h2-1">Populaire bestemmingen</h2>
+<p class="p-3">Lijst komt uit de productcatalogus – nieuwe planeten verschijnen automatisch.</p>
 </div>
-<a href="/bestemmingen" style="font-weight: 600">Alle bestemmingen</a>
+<a href="/bestemmingen" class="a-1">Alle bestemmingen</a>
 </div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px">
+<div class="div-6">
 @foreach (var p in Planeten) {
-<a href="/reis" style="text-decoration: none; color: var(--ink); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column">
-<div style="height: 160px; background: var(--surface); display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 14px">Afbeelding: @(p.Naam)</div>
-<div style="padding: 16px; display: flex; flex-direction: column; gap: 6px">
-<span style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700">@(p.Naam)</span>
-<span style="font-size: 14px; color: var(--muted)">@(p.Kenmerk)</span>
-<span style="font-size: 15px; font-weight: 600; color: var(--brand)">vanaf [PRIJS] p.p.</span>
+<a href="/reis" class="a-2">
+<div class="div-7">Afbeelding: @(p.Naam)</div>
+<div class="div-8">
+<span class="span-1">@(p.Naam)</span>
+<span class="span-2">@(p.Kenmerk)</span>
+<span class="span-3">vanaf [PRIJS] p.p.</span>
 </div>
 </a>
 }
 </div>
 </section>
 
-<section style="max-width: 1280px; margin: 0 auto; padding: 40px 32px 24px; display: flex; flex-direction: column; gap: 24px">
-<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 32px">Kies je reisvorm</h2>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px">
+<section class="section-3">
+<h2 class="h2-1">Kies je reisvorm</h2>
+<div class="div-6">
 @foreach (var r in Reisvormen) {
-<a href="/bestemmingen" style="text-decoration: none; color: var(--ink); background: var(--surface); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
-<span style="width: 48px; height: 48px; border-radius: 12px; border: 2px dashed var(--brand); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--brand); font-weight: 700">ICOON</span>
-<span style="font-size: 18px; font-weight: 700">@(r.Naam)</span>
-<span style="font-size: 14px; color: var(--muted); line-height: 1.4">@(r.Uitleg)</span>
+<a href="/bestemmingen" class="a-3">
+<span class="span-4">ICOON</span>
+<span class="span-5">@(r.Naam)</span>
+<span class="span-6">@(r.Uitleg)</span>
 </a>
 }
 </div>
 </section>
 
-<section style="max-width: 1280px; margin: 0 auto; padding: 40px 32px 24px">
-<div style="border-radius: 20px; background: var(--brand-tint); padding: 32px; display: flex; flex-wrap: wrap; gap: 32px; align-items: center">
-<div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 12px">
-<p style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brand-hover)">Speciaal voor jou</p>
-<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 30px">[CAMPAGNETITEL – gepersonaliseerd op voorkeuren klant]</h2>
-<p style="margin: 0; color: var(--text-2); line-height: 1.5">[Campagnetekst. Ingelogde klant: aanbod o.b.v. eerdere boekingen en voorkeuren. Gast: algemene actie.]</p>
-<div><a href="/bestemmingen" style="display: inline-block; background: var(--ink); color: var(--white); text-decoration: none; padding: 14px 22px; border-radius: 10px; font-weight: 600">Bekijk aanbieding</a></div>
+<section class="section-4">
+<div class="div-9">
+<div class="div-10">
+<p class="p-4">Speciaal voor jou</p>
+<h2 class="h2-2">[CAMPAGNETITEL – gepersonaliseerd op voorkeuren klant]</h2>
+<p class="p-5">[Campagnetekst. Ingelogde klant: aanbod o.b.v. eerdere boekingen en voorkeuren. Gast: algemene actie.]</p>
+<div><a href="/bestemmingen" class="a-4">Bekijk aanbieding</a></div>
 </div>
-<div style="flex: 1 1 360px; height: 220px; border: 2px dashed var(--brand-soft); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--text-2); font-size: 14px">Afbeelding: campagnebeeld</div>
-</div>
-</section>
-
-<section style="max-width: 1280px; margin: 0 auto; padding: 40px 32px 24px; display: flex; flex-direction: column; gap: 24px">
-<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 32px">Waarom VoyageVista</h2>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px">
-<div style="border: 1px solid var(--line); border-radius: 16px; padding: 20px"><p style="margin: 0 0 6px; font-weight: 700">Actuele prijzen</p><p style="margin: 0; font-size: 14px; color: var(--muted)">Prijs en beschikbaarheid altijd live uit één systeem.</p></div>
-<div style="border: 1px solid var(--line); border-radius: 16px; padding: 20px"><p style="margin: 0 0 6px; font-weight: 700">Zelf samenstellen</p><p style="margin: 0; font-size: 14px; color: var(--muted)">Kies reisvorm, verblijf en activiteiten in een paar stappen.</p></div>
-<div style="border: 1px solid var(--line); border-radius: 16px; padding: 20px"><p style="margin: 0 0 6px; font-weight: 700">Alles op één plek</p><p style="margin: 0; font-size: 14px; color: var(--muted)">Boekingen, facturen en vragen in je eigen account.</p></div>
-<div style="border: 1px solid var(--line); border-radius: 16px; padding: 20px"><p style="margin: 0 0 6px; font-weight: 700">[USP 4]</p><p style="margin: 0; font-size: 14px; color: var(--muted)">[Uitkomst concurrentieanalyse]</p></div>
+<div class="div-11">Afbeelding: campagnebeeld</div>
 </div>
 </section>
 
-<footer style="background: var(--ink); color: var(--on-dark)">
-<div style="max-width: 1280px; margin: 0 auto; padding: 40px 32px; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; font-size: 14px">
-<span style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: var(--white)">VoyageVista</span>
-<div style="display: flex; flex-direction: column; gap: 8px"><strong style="color: var(--white)">Service</strong><span>Klantenservice</span><span>Veelgestelde vragen</span><span>Klacht indienen</span></div>
-<div style="display: flex; flex-direction: column; gap: 8px"><strong style="color: var(--white)">Over ons</strong><span>Over VoyageVista</span><span>Voorwaarden</span><span>Privacy</span></div>
-<div style="display: flex; flex-direction: column; gap: 8px"><strong style="color: var(--white)">Volg ons</strong><span>[Social media links]</span></div>
+<section class="section-3">
+<h2 class="h2-1">Waarom VoyageVista</h2>
+<div class="div-6">
+<div class="div-12"><p class="p-6">Actuele prijzen</p><p class="p-7">Prijs en beschikbaarheid altijd live uit één systeem.</p></div>
+<div class="div-12"><p class="p-6">Zelf samenstellen</p><p class="p-7">Kies reisvorm, verblijf en activiteiten in een paar stappen.</p></div>
+<div class="div-12"><p class="p-6">Alles op één plek</p><p class="p-7">Boekingen, facturen en vragen in je eigen account.</p></div>
+<div class="div-12"><p class="p-6">[USP 4]</p><p class="p-7">[Uitkomst concurrentieanalyse]</p></div>
+</div>
+</section>
+
+<footer class="footer-1">
+<div class="div-13">
+<span class="span-7">VoyageVista</span>
+<div class="div-14"><strong class="strong-1">Service</strong><span>Klantenservice</span><span>Veelgestelde vragen</span><span>Klacht indienen</span></div>
+<div class="div-14"><strong class="strong-1">Over ons</strong><span>Over VoyageVista</span><span>Voorwaarden</span><span>Privacy</span></div>
+<div class="div-14"><strong class="strong-1">Volg ons</strong><span>[Social media links]</span></div>
 </div>
 </footer>
 

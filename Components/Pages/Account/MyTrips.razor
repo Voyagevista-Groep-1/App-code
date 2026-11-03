@@ -5,61 +5,61 @@
 
 <SiteHeader />
 
-<main style="max-width: 1280px; margin: 0 auto; padding: 32px; display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
-<nav aria-label="Accountmenu" style="flex: 1 1 220px; max-width: 260px; display: flex; flex-direction: column; gap: 4px">
-<a href="/mijn-reizen" aria-current="page" style="background: var(--brand-tint); color: var(--brand-dark); text-decoration: none; padding: 12px 14px; border-radius: 10px; font-weight: 700">Mijn reizen</a>
+<main class="main-1">
+<nav aria-label="Accountmenu" class="nav-1">
+<a href="/mijn-reizen" aria-current="page" class="a-1">Mijn reizen</a>
 </nav>
 
-<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 28px">
-<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 32px">Hoi @_naam</h1>
+<div class="div-1">
+<h1 class="h1-1">Hoi @_naam</h1>
 
-<section style="background: var(--ink); color: var(--white); border-radius: 18px; padding: 24px; display: flex; flex-wrap: wrap; gap: 24px; align-items: center">
-<div style="flex: 1 1 200px; height: 150px; border: 2px dashed var(--dark-border); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--on-dark-muted); font-size: 14px">Afbeelding: Mars</div>
-<div style="flex: 2 1 320px; display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-light)">Volgende reis · nog [X] dagen</span>
-<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 26px">Mars Basecamp Expeditie</h2>
-<span style="color: var(--on-dark)">[DATUM] – [DATUM] · Raket · 2 reizigers · [VV-000000]</span>
-<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px">
-<a href="/reis" style="background: var(--white); color: var(--ink); text-decoration: none; padding: 12px 16px; border-radius: 10px; font-weight: 600">Bekijk details</a>
+<section class="section-1">
+<div class="div-2">Afbeelding: Mars</div>
+<div class="div-3">
+<span class="span-1">Volgende reis · nog [X] dagen</span>
+<h2 class="h2-1">Mars Basecamp Expeditie</h2>
+<span class="span-2">[DATUM] – [DATUM] · Raket · 2 reizigers · [VV-000000]</span>
+<div class="div-4">
+<a href="/reis" class="a-2">Bekijk details</a>
 </div>
 </div>
 </section>
 
-<section style="display: flex; flex-direction: column; gap: 12px">
-<h2 style="margin: 0; font-size: 20px">Mijn boekingen</h2>
-<div style="overflow-x: auto; border: 1px solid var(--line); border-radius: 14px">
-<table style="width: 100%; border-collapse: collapse; font-size: 15px; min-width: 640px">
-<thead><tr style="background: var(--surface-3); text-align: left"><th style="padding: 14px">Boeking</th><th style="padding: 14px">Reis</th><th style="padding: 14px">Vertrek</th><th style="padding: 14px">Status</th><th style="padding: 14px">Betaling</th></tr></thead>
+<section class="section-2">
+<h2 class="h2-2">Mijn boekingen</h2>
+<div class="div-5">
+<table class="table-1">
+<thead><tr class="tr-1"><th class="th-1">Boeking</th><th class="th-1">Reis</th><th class="th-1">Vertrek</th><th class="th-1">Status</th><th class="th-1">Betaling</th></tr></thead>
 <tbody>
 @foreach (var b in Boekingen) {
-<tr style="border-top: 1px solid var(--line)"><td style="padding: 14px">@(b.Nr)</td><td style="padding: 14px; font-weight: 600">@(b.Reis)</td><td style="padding: 14px">@(b.Datum)</td><td style="padding: 14px">@(b.Status)</td><td style="padding: 14px">@(b.Betaling)</td></tr>
+<tr class="tr-2"><td class="th-1">@(b.Nr)</td><td class="td-1">@(b.Reis)</td><td class="th-1">@(b.Datum)</td><td class="th-1">@(b.Status)</td><td class="th-1">@(b.Betaling)</td></tr>
 }
 </tbody>
 </table>
 </div>
 </section>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px">
-<section style="border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
-<h2 style="margin: 0; font-size: 18px">Openstaande offerte</h2>
-<p style="margin: 0">Saturnus Ringencruise · 2 pers.</p>
-<p style="margin: 0; font-size: 14px; color: var(--warning); font-weight: 600">Prijs geldig tot [DATUM]</p>
-<a href="/boeken/samenstellen" style="align-self: flex-start; background: var(--brand); color: var(--white); text-decoration: none; padding: 12px 16px; border-radius: 10px; font-weight: 600">Offerte boeken</a>
+<div class="div-6">
+<section class="section-3">
+<h2 class="h2-3">Openstaande offerte</h2>
+<p class="p-1">Saturnus Ringencruise · 2 pers.</p>
+<p class="p-2">Prijs geldig tot [DATUM]</p>
+<a href="/boeken/samenstellen" class="a-3">Offerte boeken</a>
 </section>
-<section style="border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
-<h2 style="margin: 0; font-size: 18px">Mijn vragen</h2>
-<p style="margin: 0">#[TICKET] Bagagelimiet raket</p>
-<p style="margin: 0; font-size: 14px; color: var(--info); font-weight: 600">In behandeling · antwoord binnen [X] uur</p>
+<section class="section-3">
+<h2 class="h2-3">Mijn vragen</h2>
+<p class="p-1">#[TICKET] Bagagelimiet raket</p>
+<p class="p-3">In behandeling · antwoord binnen [X] uur</p>
 </section>
 </div>
 
-<section style="display: flex; flex-direction: column; gap: 12px">
-<h2 style="margin: 0; font-size: 20px">Aanbevolen voor jou</h2>
-<p style="margin: 0; font-size: 14px; color: var(--muted)">Op basis van je eerdere reizen en voorkeuren.</p>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px">
-<a href="/reis" style="text-decoration: none; color: var(--ink); border: 1px solid var(--line); border-radius: 14px; padding: 14px"><div style="height: 100px; background: var(--surface); border-radius: 10px; margin-bottom: 10px"></div><strong>[Aanbeveling 1]</strong><p style="margin: 4px 0 0; font-size: 14px; color: var(--muted)">vanaf [PRIJS]</p></a>
-<a href="/reis" style="text-decoration: none; color: var(--ink); border: 1px solid var(--line); border-radius: 14px; padding: 14px"><div style="height: 100px; background: var(--surface); border-radius: 10px; margin-bottom: 10px"></div><strong>[Aanbeveling 2]</strong><p style="margin: 4px 0 0; font-size: 14px; color: var(--muted)">vanaf [PRIJS]</p></a>
-<a href="/reis" style="text-decoration: none; color: var(--ink); border: 1px solid var(--line); border-radius: 14px; padding: 14px"><div style="height: 100px; background: var(--surface); border-radius: 10px; margin-bottom: 10px"></div><strong>[Aanbeveling 3]</strong><p style="margin: 4px 0 0; font-size: 14px; color: var(--muted)">vanaf [PRIJS]</p></a>
+<section class="section-2">
+<h2 class="h2-2">Aanbevolen voor jou</h2>
+<p class="p-4">Op basis van je eerdere reizen en voorkeuren.</p>
+<div class="div-7">
+<a href="/reis" class="a-4"><div class="div-8"></div><strong>[Aanbeveling 1]</strong><p class="p-5">vanaf [PRIJS]</p></a>
+<a href="/reis" class="a-4"><div class="div-8"></div><strong>[Aanbeveling 2]</strong><p class="p-5">vanaf [PRIJS]</p></a>
+<a href="/reis" class="a-4"><div class="div-8"></div><strong>[Aanbeveling 3]</strong><p class="p-5">vanaf [PRIJS]</p></a>
 </div>
 </section>
 </div>

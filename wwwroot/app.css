@@ -83,3 +83,10 @@ html, body {
 .auth-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .auth-actions form { margin: 0; }
 .auth-switch { margin: 0; font-size: 14px; color: var(--muted); }
+
+.site-shell {
+    position: relative;
+    font-family: Inter, system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--white);
+}

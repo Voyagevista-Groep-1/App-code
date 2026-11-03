@@ -4,68 +4,68 @@
 
 <PayHeader />
 
-<nav aria-label="Boekingsstappen" style="background: var(--surface)">
-<ol style="max-width: 1280px; margin: 0 auto; padding: 18px 32px; list-style: none; display: flex; flex-wrap: wrap; gap: 12px 28px; font-size: 14px">
-<li style="display: flex; gap: 8px; align-items: center; color: var(--success); font-weight: 600"><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--success); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px">✓</span>Reis kiezen</li>
-<li style="display: flex; gap: 8px; align-items: center; color: var(--success); font-weight: 600"><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--success); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px">✓</span>Samenstellen</li>
-<li style="display: flex; gap: 8px; align-items: center; color: var(--success); font-weight: 600"><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--success); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px">✓</span>Gegevens</li>
-<li aria-current="step" style="display: flex; gap: 8px; align-items: center; font-weight: 700"><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px">4</span>Betalen</li>
-<li style="display: flex; gap: 8px; align-items: center; color: var(--muted)"><span style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--subtle); display: flex; align-items: center; justify-content: center; font-size: 13px">5</span>Bevestiging</li>
+<nav aria-label="Boekingsstappen" class="nav-1">
+<ol class="ol-1">
+<li class="li-1"><span class="span-1">✓</span>Reis kiezen</li>
+<li class="li-1"><span class="span-1">✓</span>Samenstellen</li>
+<li class="li-1"><span class="span-1">✓</span>Gegevens</li>
+<li aria-current="step" class="li-2"><span class="span-2">4</span>Betalen</li>
+<li class="li-3"><span class="span-3">5</span>Bevestiging</li>
 </ol>
 </nav>
 
-<main style="max-width: 1280px; margin: 0 auto; padding: 32px; display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
-<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
-<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 32px">Controleer en betaal</h1>
+<main class="main-1">
+<div class="div-1">
+<h1 class="h1-1">Controleer en betaal</h1>
 
-<section style="border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; justify-content: space-between; align-items: center"><h2 style="margin: 0; font-size: 18px">Reis</h2><a href="/boeken/samenstellen" style="font-size: 14px; font-weight: 600">Wijzig</a></div>
-<p style="margin: 0">Mars Basecamp Expeditie · [DATUM] – [DATUM]</p>
-<p style="margin: 0; font-size: 14px; color: var(--muted)">Raket · Basecamp Dome · Rover-tocht Olympus Mons</p>
+<section class="section-1">
+<div class="div-2"><h2 class="h2-1">Reis</h2><a href="/boeken/samenstellen" class="a-1">Wijzig</a></div>
+<p class="p-1">Mars Basecamp Expeditie · [DATUM] – [DATUM]</p>
+<p class="p-2">Raket · Basecamp Dome · Rover-tocht Olympus Mons</p>
 </section>
 
-<section style="border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; justify-content: space-between; align-items: center"><h2 style="margin: 0; font-size: 18px">Reizigers</h2><a href="/boeken/gegevens" style="font-size: 14px; font-weight: 600">Wijzig</a></div>
-<p style="margin: 0">Sanne [ACHTERNAAM] (hoofdreiziger) · [REIZIGER 2]</p>
-<p style="margin: 0; font-size: 14px; color: var(--muted)">Bevestiging gaat naar [E-MAILADRES]</p>
+<section class="section-1">
+<div class="div-2"><h2 class="h2-1">Reizigers</h2><a href="/boeken/gegevens" class="a-1">Wijzig</a></div>
+<p class="p-1">Sanne [ACHTERNAAM] (hoofdreiziger) · [REIZIGER 2]</p>
+<p class="p-2">Bevestiging gaat naar [E-MAILADRES]</p>
 </section>
 
-<fieldset style="border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin: 0; display: flex; flex-direction: column; gap: 10px">
-<legend style="font-weight: 700; font-size: 18px; padding: 0 6px">Betaalmethode</legend>
-<label style="display: flex; gap: 10px; align-items: center; border: 2px solid var(--brand); border-radius: 12px; padding: 14px"><input type="radio" name="betaal" @onchange="@(() => _methode = "ideal")" checked="@(_methode == "ideal")"> iDEAL</label>
-<label style="display: flex; gap: 10px; align-items: center; border: 1px solid var(--border); border-radius: 12px; padding: 14px"><input type="radio" name="betaal" @onchange="@(() => _methode = "credit")" checked="@(_methode == "credit")"> Creditcard</label>
-<label style="display: flex; gap: 10px; align-items: center; border: 1px solid var(--border); border-radius: 12px; padding: 14px"><input type="radio" name="betaal" @onchange="@(() => _methode = "aanbetaling")" checked="@(_methode == "aanbetaling")"> Aanbetaling nu ([X]%), rest uiterlijk [X] weken voor vertrek</label>
+<fieldset class="fieldset-1">
+<legend class="legend-1">Betaalmethode</legend>
+<label class="label-1"><input type="radio" name="betaal" @onchange="@(() => _methode = "ideal")" checked="@(_methode == "ideal")"> iDEAL</label>
+<label class="label-2"><input type="radio" name="betaal" @onchange="@(() => _methode = "credit")" checked="@(_methode == "credit")"> Creditcard</label>
+<label class="label-2"><input type="radio" name="betaal" @onchange="@(() => _methode = "aanbetaling")" checked="@(_methode == "aanbetaling")"> Aanbetaling nu ([X]%), rest uiterlijk [X] weken voor vertrek</label>
 </fieldset>
 
-<div style="display: flex; flex-direction: column; gap: 10px; font-size: 15px">
-@if (_akkoordFout) {<div role="alert" style="color: var(--danger); font-weight: 500">Ga akkoord met de voorwaarden om verder te gaan.</div>}
-<label style="display: flex; gap: 10px; align-items: flex-start"><input type="checkbox" @bind="_akkoord" required> Ik ga akkoord met de <a href="/reis">reisvoorwaarden</a> en het <a href="/reis">annuleringsbeleid</a> *</label>
+<div class="div-3">
+@if (_akkoordFout) {<div role="alert" class="div-4">Ga akkoord met de voorwaarden om verder te gaan.</div>}
+<label class="label-3"><input type="checkbox" @bind="_akkoord" required> Ik ga akkoord met de <a href="/reis">reisvoorwaarden</a> en het <a href="/reis">annuleringsbeleid</a> *</label>
 </div>
 
-<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px">
-<a href="/boeken/gegevens" style="border: 1px solid var(--border); color: var(--ink); text-decoration: none; padding: 14px 22px; border-radius: 10px; font-weight: 600">Terug</a>
-<button type="button" @onclick="Bevestig" style="background: var(--brand); color: var(--white); border: 0; padding: 14px 22px; border-radius: 10px; font-weight: 600; font-size: 16px; font-family: inherit; cursor: pointer">Betalen en boeken</button>
+<div class="div-5">
+<a href="/boeken/gegevens" class="a-2">Terug</a>
+<button type="button" @onclick="Bevestig" class="button-1">Betalen en boeken</button>
 </div>
 </div>
 
-<aside aria-label="Prijsoverzicht" style="flex: 1 1 320px; border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 10px; font-size: 15px">
-<h2 style="margin: 0 0 4px; font-size: 18px">Prijsoverzicht</h2>
-<div style="display: flex; justify-content: space-between"><span>Basisreis × 2</span><span>[PRIJS]</span></div>
-<div style="display: flex; justify-content: space-between"><span>Reisvorm: Raket</span><span>inbegrepen</span></div>
-<div style="display: flex; justify-content: space-between"><span>Rover-tocht × 2</span><span>[PRIJS]</span></div>
-<div style="border-top: 1px solid var(--line); padding-top: 12px; display: flex; justify-content: space-between; font-weight: 700; font-size: 20px"><span>Totaal</span><span>[TOTAAL]</span></div>
-<p style="margin: 0; font-size: 12px; color: var(--muted)">Incl. belastingen en toeslagen. Factuur volgt automatisch per e-mail.</p>
+<aside aria-label="Prijsoverzicht" class="aside-1">
+<h2 class="h2-2">Prijsoverzicht</h2>
+<div class="div-6"><span>Basisreis × 2</span><span>[PRIJS]</span></div>
+<div class="div-6"><span>Reisvorm: Raket</span><span>inbegrepen</span></div>
+<div class="div-6"><span>Rover-tocht × 2</span><span>[PRIJS]</span></div>
+<div class="div-7"><span>Totaal</span><span>[TOTAAL]</span></div>
+<p class="p-3">Incl. belastingen en toeslagen. Factuur volgt automatisch per e-mail.</p>
 </aside>
 </main>
 
 @if (_toonModal) {
-<div style="position: absolute; inset: 0; background: rgba(22,22,63,0.55); display: flex; justify-content: center; align-items: flex-start; padding: 220px 24px 24px">
-<div role="dialog" aria-modal="true" aria-labelledby="bevestig-titel" style="background: var(--white); border-radius: 18px; padding: 28px; max-width: 480px; width: 100%; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.25)">
-<h2 id="bevestig-titel" style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 24px">Boeking bevestigen?</h2>
-<p style="margin: 0; color: var(--text-2); line-height: 1.5">Je boekt <strong>Mars Basecamp Expeditie</strong> voor 2 reizigers voor <strong>[TOTAAL]</strong>. Na betaling gelden de annuleringsvoorwaarden.</p>
-<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end">
-<button type="button" @onclick="() => _toonModal = false" style="background: var(--white); border: 1px solid var(--border); color: var(--ink); padding: 12px 18px; border-radius: 10px; font-weight: 600; font-family: inherit; font-size: 15px; cursor: pointer">Annuleren</button>
-<a href="/boeken/bevestiging" style="background: var(--brand); color: var(--white); text-decoration: none; padding: 12px 18px; border-radius: 10px; font-weight: 600">Ja, betaal en boek</a>
+<div class="div-8">
+<div role="dialog" aria-modal="true" aria-labelledby="bevestig-titel" class="div-9">
+<h2 id="bevestig-titel" class="h2-3">Boeking bevestigen?</h2>
+<p class="p-4">Je boekt <strong>Mars Basecamp Expeditie</strong> voor 2 reizigers voor <strong>[TOTAAL]</strong>. Na betaling gelden de annuleringsvoorwaarden.</p>
+<div class="div-10">
+<button type="button" @onclick="() => _toonModal = false" class="button-2">Annuleren</button>
+<a href="/boeken/bevestiging" class="a-3">Ja, betaal en boek</a>
 </div>
 </div>
 </div>

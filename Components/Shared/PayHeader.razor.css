@@ -1,0 +1,51 @@
+.header-1 {
+    border-bottom: 1px solid var(--line);
+}
+
+.div-1 {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px 32px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.a-1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--ink);
+}
+
+.span-1 {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px dashed var(--brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--brand);
+}
+
+.span-2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.span-3 {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.a-2 {
+    font-weight: 600;
+}
+
