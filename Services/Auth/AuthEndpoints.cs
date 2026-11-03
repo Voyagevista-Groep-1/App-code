@@ -8,13 +8,14 @@ public static class AuthEndpoints
     {
         var group = app.MapGroup("/auth");
 
-        group.MapPost("/login", async (AuthService auth, [FromForm] string email, [FromForm] string password) =>
+        group.MapPost("/login", async (AuthService auth, [FromForm] string? email, [FromForm] string? password, [FromForm] string? returnUrl) =>
         {
-            var result = await auth.LoginAsync(email, password);
+            var target = IsLocalPath(returnUrl) ? returnUrl! : "/";
+            var result = await auth.LoginAsync(email ?? "", password ?? "");
 
             return result.Success
-                ? Results.LocalRedirect("/")
-                : Results.LocalRedirect($"/auth/login?error={Uri.EscapeDataString(result.Error ?? "Inloggen mislukt.")}");
+                ? Results.LocalRedirect(target)
+                : Results.LocalRedirect($"/auth/login?error={Uri.EscapeDataString(result.Error ?? "Inloggen mislukt.")}&returnUrl={Uri.EscapeDataString(target)}");
         });
 
         group.MapPost("/logout", async (AuthService auth) =>
@@ -25,4 +26,7 @@ public static class AuthEndpoints
 
         return app;
     }
+
+    private static bool IsLocalPath(string? url) =>
+        !string.IsNullOrEmpty(url) && url[0] == '/' && (url.Length == 1 || (url[1] != '/' && url[1] != '\\'));
 }

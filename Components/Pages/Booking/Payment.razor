@@ -2,15 +2,15 @@
 
 <PageTitle>VoyageVista – Overzicht en betalen</PageTitle>
 
-@@<PayHeader />@@
+<PayHeader />
 
-<nav aria-label="Boekingsstappen" style="background: #EEF3FB">
+<nav aria-label="Boekingsstappen" style="background: var(--surface)">
 <ol style="max-width: 1280px; margin: 0 auto; padding: 18px 32px; list-style: none; display: flex; flex-wrap: wrap; gap: 12px 28px; font-size: 14px">
-<li style="display: flex; gap: 8px; align-items: center; color: #1D5C3A; font-weight: 600"><span style="width: 28px; height: 28px; border-radius: 50%; background: #1D5C3A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px">✓</span>Reis kiezen</li>
-<li style="display: flex; gap: 8px; align-items: center; color: #1D5C3A; font-weight: 600"><span style="width: 28px; height: 28px; border-radius: 50%; background: #1D5C3A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px">✓</span>Samenstellen</li>
-<li style="display: flex; gap: 8px; align-items: center; color: #1D5C3A; font-weight: 600"><span style="width: 28px; height: 28px; border-radius: 50%; background: #1D5C3A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px">✓</span>Gegevens</li>
-<li aria-current="step" style="display: flex; gap: 8px; align-items: center; font-weight: 700"><span style="width: 28px; height: 28px; border-radius: 50%; background: #5A3FD1; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px">4</span>Betalen</li>
-<li style="display: flex; gap: 8px; align-items: center; color: #55607A"><span style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid #8C95AD; display: flex; align-items: center; justify-content: center; font-size: 13px">5</span>Bevestiging</li>
+<li style="display: flex; gap: 8px; align-items: center; color: var(--success); font-weight: 600"><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--success); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px">✓</span>Reis kiezen</li>
+<li style="display: flex; gap: 8px; align-items: center; color: var(--success); font-weight: 600"><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--success); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px">✓</span>Samenstellen</li>
+<li style="display: flex; gap: 8px; align-items: center; color: var(--success); font-weight: 600"><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--success); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px">✓</span>Gegevens</li>
+<li aria-current="step" style="display: flex; gap: 8px; align-items: center; font-weight: 700"><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px">4</span>Betalen</li>
+<li style="display: flex; gap: 8px; align-items: center; color: var(--muted)"><span style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--subtle); display: flex; align-items: center; justify-content: center; font-size: 13px">5</span>Bevestiging</li>
 </ol>
 </nav>
 
@@ -18,56 +18,54 @@
 <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
 <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 32px">Controleer en betaal</h1>
 
-<section style="border: 1px solid #E3E7F0; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<section style="border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
 <div style="display: flex; justify-content: space-between; align-items: center"><h2 style="margin: 0; font-size: 18px">Reis</h2><a href="/boeken/samenstellen" style="font-size: 14px; font-weight: 600">Wijzig</a></div>
 <p style="margin: 0">Mars Basecamp Expeditie · [DATUM] – [DATUM]</p>
-<p style="margin: 0; font-size: 14px; color: #55607A">Raket · Basecamp Dome · Rover-tocht Olympus Mons</p>
+<p style="margin: 0; font-size: 14px; color: var(--muted)">Raket · Basecamp Dome · Rover-tocht Olympus Mons</p>
 </section>
 
-<section style="border: 1px solid #E3E7F0; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<section style="border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
 <div style="display: flex; justify-content: space-between; align-items: center"><h2 style="margin: 0; font-size: 18px">Reizigers</h2><a href="/boeken/gegevens" style="font-size: 14px; font-weight: 600">Wijzig</a></div>
 <p style="margin: 0">Sanne [ACHTERNAAM] (hoofdreiziger) · [REIZIGER 2]</p>
-<p style="margin: 0; font-size: 14px; color: #55607A">Bevestiging gaat naar [E-MAILADRES]</p>
+<p style="margin: 0; font-size: 14px; color: var(--muted)">Bevestiging gaat naar [E-MAILADRES]</p>
 </section>
 
-<fieldset style="border: 1px solid #E3E7F0; border-radius: 16px; padding: 20px; margin: 0; display: flex; flex-direction: column; gap: 10px">
+<fieldset style="border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin: 0; display: flex; flex-direction: column; gap: 10px">
 <legend style="font-weight: 700; font-size: 18px; padding: 0 6px">Betaalmethode</legend>
-<label style="display: flex; gap: 10px; align-items: center; border: 2px solid #5A3FD1; border-radius: 12px; padding: 14px"><input type="radio" name="betaal" checked> iDEAL</label>
-<label style="display: flex; gap: 10px; align-items: center; border: 1px solid #C9D1E3; border-radius: 12px; padding: 14px"><input type="radio" name="betaal"> Creditcard</label>
-<label style="display: flex; gap: 10px; align-items: center; border: 1px solid #C9D1E3; border-radius: 12px; padding: 14px"><input type="radio" name="betaal"> Aanbetaling nu ([X]%), rest uiterlijk [X] weken voor vertrek</label>
+<label style="display: flex; gap: 10px; align-items: center; border: 2px solid var(--brand); border-radius: 12px; padding: 14px"><input type="radio" name="betaal" @onchange="@(() => _methode = "ideal")" checked="@(_methode == "ideal")"> iDEAL</label>
+<label style="display: flex; gap: 10px; align-items: center; border: 1px solid var(--border); border-radius: 12px; padding: 14px"><input type="radio" name="betaal" @onchange="@(() => _methode = "credit")" checked="@(_methode == "credit")"> Creditcard</label>
+<label style="display: flex; gap: 10px; align-items: center; border: 1px solid var(--border); border-radius: 12px; padding: 14px"><input type="radio" name="betaal" @onchange="@(() => _methode = "aanbetaling")" checked="@(_methode == "aanbetaling")"> Aanbetaling nu ([X]%), rest uiterlijk [X] weken voor vertrek</label>
 </fieldset>
 
 <div style="display: flex; flex-direction: column; gap: 10px; font-size: 15px">
-<label style="display: flex; gap: 10px; align-items: flex-start"><input type="checkbox"> Ik ga akkoord met de <a href="/reis">reisvoorwaarden</a> en het <a href="/reis">annuleringsbeleid</a> *</label>
+@if (_akkoordFout) {<div role="alert" style="color: var(--danger); font-weight: 500">Ga akkoord met de voorwaarden om verder te gaan.</div>}
+<label style="display: flex; gap: 10px; align-items: flex-start"><input type="checkbox" @bind="_akkoord" required> Ik ga akkoord met de <a href="/reis">reisvoorwaarden</a> en het <a href="/reis">annuleringsbeleid</a> *</label>
 </div>
 
 <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px">
-<a href="/boeken/gegevens" style="border: 1px solid #C9D1E3; color: #16163F; text-decoration: none; padding: 14px 22px; border-radius: 10px; font-weight: 600">Terug</a>
-<button type="button" @onclick="() => _toonModal = true" style="background: #5A3FD1; color: #FFFFFF; border: 0; padding: 14px 22px; border-radius: 10px; font-weight: 600; font-size: 16px; font-family: inherit; cursor: pointer">Betalen en boeken</button>
+<a href="/boeken/gegevens" style="border: 1px solid var(--border); color: var(--ink); text-decoration: none; padding: 14px 22px; border-radius: 10px; font-weight: 600">Terug</a>
+<button type="button" @onclick="Bevestig" style="background: var(--brand); color: var(--white); border: 0; padding: 14px 22px; border-radius: 10px; font-weight: 600; font-size: 16px; font-family: inherit; cursor: pointer">Betalen en boeken</button>
 </div>
 </div>
 
-<aside aria-label="Prijsoverzicht" style="flex: 1 1 320px; border: 1px solid #C9D1E3; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 10px; font-size: 15px">
+<aside aria-label="Prijsoverzicht" style="flex: 1 1 320px; border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 10px; font-size: 15px">
 <h2 style="margin: 0 0 4px; font-size: 18px">Prijsoverzicht</h2>
 <div style="display: flex; justify-content: space-between"><span>Basisreis × 2</span><span>[PRIJS]</span></div>
 <div style="display: flex; justify-content: space-between"><span>Reisvorm: Raket</span><span>inbegrepen</span></div>
 <div style="display: flex; justify-content: space-between"><span>Rover-tocht × 2</span><span>[PRIJS]</span></div>
-<div style="display: flex; justify-content: space-between"><span>Kortingscode</span><span>– [KORTING]</span></div>
-<label style="display: flex; gap: 8px; margin-top: 6px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden">Kortingscode</span><input type="text" placeholder="Kortingscode" style="flex: 1; min-width: 0; height: 44px; border: 1px solid #C9D1E3; border-radius: 10px; padding: 0 12px; font-family: inherit"></label>
-<button type="button" style="background: #FFFFFF; border: 1px solid #C9D1E3; color: #16163F; padding: 10px; border-radius: 10px; font-weight: 600; font-family: inherit">Toepassen</button>
-<div style="border-top: 1px solid #E3E7F0; padding-top: 12px; display: flex; justify-content: space-between; font-weight: 700; font-size: 20px"><span>Totaal</span><span>[TOTAAL]</span></div>
-<p style="margin: 0; font-size: 12px; color: #55607A">Incl. belastingen en toeslagen. Factuur volgt automatisch per e-mail.</p>
+<div style="border-top: 1px solid var(--line); padding-top: 12px; display: flex; justify-content: space-between; font-weight: 700; font-size: 20px"><span>Totaal</span><span>[TOTAAL]</span></div>
+<p style="margin: 0; font-size: 12px; color: var(--muted)">Incl. belastingen en toeslagen. Factuur volgt automatisch per e-mail.</p>
 </aside>
 </main>
 
 @if (_toonModal) {
 <div style="position: absolute; inset: 0; background: rgba(22,22,63,0.55); display: flex; justify-content: center; align-items: flex-start; padding: 220px 24px 24px">
-<div role="dialog" aria-modal="true" aria-labelledby="bevestig-titel" style="background: #FFFFFF; border-radius: 18px; padding: 28px; max-width: 480px; width: 100%; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.25)">
+<div role="dialog" aria-modal="true" aria-labelledby="bevestig-titel" style="background: var(--white); border-radius: 18px; padding: 28px; max-width: 480px; width: 100%; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.25)">
 <h2 id="bevestig-titel" style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 24px">Boeking bevestigen?</h2>
-<p style="margin: 0; color: #3A3F5C; line-height: 1.5">Je boekt <strong>Mars Basecamp Expeditie</strong> voor 2 reizigers voor <strong>[TOTAAL]</strong>. Na betaling gelden de annuleringsvoorwaarden.</p>
+<p style="margin: 0; color: var(--text-2); line-height: 1.5">Je boekt <strong>Mars Basecamp Expeditie</strong> voor 2 reizigers voor <strong>[TOTAAL]</strong>. Na betaling gelden de annuleringsvoorwaarden.</p>
 <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end">
-<button type="button" @onclick="() => _toonModal = false" style="background: #FFFFFF; border: 1px solid #C9D1E3; color: #16163F; padding: 12px 18px; border-radius: 10px; font-weight: 600; font-family: inherit; font-size: 15px; cursor: pointer">Annuleren</button>
-<a href="/boeken/bevestiging" style="background: #5A3FD1; color: #FFFFFF; text-decoration: none; padding: 12px 18px; border-radius: 10px; font-weight: 600">Ja, betaal en boek</a>
+<button type="button" @onclick="() => _toonModal = false" style="background: var(--white); border: 1px solid var(--border); color: var(--ink); padding: 12px 18px; border-radius: 10px; font-weight: 600; font-family: inherit; font-size: 15px; cursor: pointer">Annuleren</button>
+<a href="/boeken/bevestiging" style="background: var(--brand); color: var(--white); text-decoration: none; padding: 12px 18px; border-radius: 10px; font-weight: 600">Ja, betaal en boek</a>
 </div>
 </div>
 </div>
@@ -75,5 +73,12 @@
 
 
 @code {
-    private bool _toonModal;
+    private bool _toonModal, _akkoord, _akkoordFout;
+    private string _methode = "ideal";
+
+    private void Bevestig()
+    {
+        _akkoordFout = !_akkoord;
+        _toonModal = _akkoord;
+    }
 }

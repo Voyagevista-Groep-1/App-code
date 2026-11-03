@@ -2,15 +2,15 @@
 
 <PageTitle>VoyageVista – Reis samenstellen</PageTitle>
 
-@@<CheckoutHeader />@@
+<CheckoutHeader />
 
-<nav aria-label="Boekingsstappen" style="background: #EEF3FB">
+<nav aria-label="Boekingsstappen" style="background: var(--surface)">
 <ol style="max-width: 1280px; margin: 0 auto; padding: 18px 32px; list-style: none; display: flex; flex-wrap: wrap; gap: 12px 28px; font-size: 14px">
-<li style="display: flex; gap: 8px; align-items: center; color: #1D5C3A; font-weight: 600"><span style="width: 28px; height: 28px; border-radius: 50%; background: #1D5C3A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px">✓</span>Reis kiezen</li>
-<li aria-current="step" style="display: flex; gap: 8px; align-items: center; font-weight: 700"><span style="width: 28px; height: 28px; border-radius: 50%; background: #5A3FD1; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px">2</span>Samenstellen</li>
-<li style="display: flex; gap: 8px; align-items: center; color: #55607A"><span style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid #8C95AD; display: flex; align-items: center; justify-content: center; font-size: 13px">3</span>Gegevens</li>
-<li style="display: flex; gap: 8px; align-items: center; color: #55607A"><span style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid #8C95AD; display: flex; align-items: center; justify-content: center; font-size: 13px">4</span>Betalen</li>
-<li style="display: flex; gap: 8px; align-items: center; color: #55607A"><span style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid #8C95AD; display: flex; align-items: center; justify-content: center; font-size: 13px">5</span>Bevestiging</li>
+<li style="display: flex; gap: 8px; align-items: center; color: var(--success); font-weight: 600"><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--success); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px">✓</span>Reis kiezen</li>
+<li aria-current="step" style="display: flex; gap: 8px; align-items: center; font-weight: 700"><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px">2</span>Samenstellen</li>
+<li style="display: flex; gap: 8px; align-items: center; color: var(--muted)"><span style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--subtle); display: flex; align-items: center; justify-content: center; font-size: 13px">3</span>Gegevens</li>
+<li style="display: flex; gap: 8px; align-items: center; color: var(--muted)"><span style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--subtle); display: flex; align-items: center; justify-content: center; font-size: 13px">4</span>Betalen</li>
+<li style="display: flex; gap: 8px; align-items: center; color: var(--muted)"><span style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--subtle); display: flex; align-items: center; justify-content: center; font-size: 13px">5</span>Bevestiging</li>
 </ol>
 </nav>
 
@@ -23,55 +23,54 @@
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px">
 @foreach (var v in Vormen) {
 <button type="button" @onclick="() => _gekozen = v" aria-pressed="@(v == _gekozen ? "true" : "false")" style="@Stijl(v)">
-<span style="width: 44px; height: 44px; border-radius: 10px; border: 2px dashed #5A3FD1; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #5A3FD1; font-weight: 700">ICOON</span>
+<span style="width: 44px; height: 44px; border-radius: 10px; border: 2px dashed var(--brand); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--brand); font-weight: 700">ICOON</span>
 <span style="font-size: 17px; font-weight: 700">@(v.Naam)</span>
-<span style="font-size: 13px; color: #55607A">Reistijd: @(v.Tijd)</span>
-<span style="font-size: 13px; color: #55607A">Comfort: @(v.Comfort)</span>
-<span style="font-size: 15px; font-weight: 600; color: #5A3FD1">@(v.Prijs)</span>
+<span style="font-size: 13px; color: var(--muted)">Reistijd: @(v.Tijd)</span>
+<span style="font-size: 13px; color: var(--muted)">Comfort: @(v.Comfort)</span>
+<span style="font-size: 15px; font-weight: 600; color: var(--brand)">@(v.Prijs)</span>
 </button>
 }
 </div>
-<p style="margin: 0; font-size: 13px; color: #55607A">Reisvormen komen uit de catalogus; een nieuwe vorm verschijnt hier zonder schermaanpassing.</p>
+<p style="margin: 0; font-size: 13px; color: var(--muted)">Reisvormen komen uit de catalogus; een nieuwe vorm verschijnt hier zonder schermaanpassing.</p>
 </section>
 
 <section style="display: flex; flex-direction: column; gap: 14px">
 <h2 style="margin: 0; font-size: 20px">2. Kies je verblijf</h2>
 <div style="display: flex; flex-direction: column; gap: 10px">
-<label style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; border: 2px solid #5A3FD1; border-radius: 14px; padding: 14px"><input type="radio" name="verblijf" checked><span style="width: 96px; height: 64px; background: #EEF3FB; border-radius: 8px"></span><span style="flex: 1 1 200px"><strong>Basecamp Dome</strong><br><span style="font-size: 14px; color: #55607A">Standaard · gedeelde faciliteiten</span></span><span style="font-weight: 600">inbegrepen</span></label>
-<label style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; border: 1px solid #C9D1E3; border-radius: 14px; padding: 14px"><input type="radio" name="verblijf"><span style="width: 96px; height: 64px; background: #EEF3FB; border-radius: 8px"></span><span style="flex: 1 1 200px"><strong>Crater View Suite</strong><br><span style="font-size: 14px; color: #55607A">Privé · uitzicht op krater</span></span><span style="font-weight: 600">+ [PRIJS]</span></label>
+<label style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; border: 2px solid var(--brand); border-radius: 14px; padding: 14px"><input type="radio" name="verblijf" checked><span style="width: 96px; height: 64px; background: var(--surface); border-radius: 8px"></span><span style="flex: 1 1 200px"><strong>Basecamp Dome</strong><br><span style="font-size: 14px; color: var(--muted)">Standaard · gedeelde faciliteiten</span></span><span style="font-weight: 600">inbegrepen</span></label>
+<label style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; border: 1px solid var(--border); border-radius: 14px; padding: 14px"><input type="radio" name="verblijf"><span style="width: 96px; height: 64px; background: var(--surface); border-radius: 8px"></span><span style="flex: 1 1 200px"><strong>Crater View Suite</strong><br><span style="font-size: 14px; color: var(--muted)">Privé · uitzicht op krater</span></span><span style="font-weight: 600">+ [PRIJS]</span></label>
 </div>
 </section>
 
 <section style="display: flex; flex-direction: column; gap: 14px">
 <h2 style="margin: 0; font-size: 20px">3. Activiteiten &amp; extra’s</h2>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; font-size: 15px">
-<label style="display: flex; gap: 10px; justify-content: space-between; border: 1px solid #C9D1E3; border-radius: 12px; padding: 14px"><span style="display: flex; gap: 10px"><input type="checkbox"> Rover-tocht Olympus Mons</span><span>+ [PRIJS]</span></label>
-<label style="display: flex; gap: 10px; justify-content: space-between; border: 1px solid #C9D1E3; border-radius: 12px; padding: 14px"><span style="display: flex; gap: 10px"><input type="checkbox"> Ruimtewandeling</span><span>+ [PRIJS]</span></label>
-<label style="display: flex; gap: 10px; justify-content: space-between; border: 1px solid #C9D1E3; border-radius: 12px; padding: 14px"><span style="display: flex; gap: 10px"><input type="checkbox"> Annuleringsverzekering</span><span>+ [PRIJS]</span></label>
-<label style="display: flex; gap: 10px; justify-content: space-between; border: 1px solid #C9D1E3; border-radius: 12px; padding: 14px"><span style="display: flex; gap: 10px"><input type="checkbox"> Ruimtereisverzekering</span><span>+ [PRIJS]</span></label>
+<label style="display: flex; gap: 10px; justify-content: space-between; border: 1px solid var(--border); border-radius: 12px; padding: 14px"><span style="display: flex; gap: 10px"><input type="checkbox"> Rover-tocht Olympus Mons</span><span>+ [PRIJS]</span></label>
+<label style="display: flex; gap: 10px; justify-content: space-between; border: 1px solid var(--border); border-radius: 12px; padding: 14px"><span style="display: flex; gap: 10px"><input type="checkbox"> Ruimtewandeling</span><span>+ [PRIJS]</span></label>
+<label style="display: flex; gap: 10px; justify-content: space-between; border: 1px solid var(--border); border-radius: 12px; padding: 14px"><span style="display: flex; gap: 10px"><input type="checkbox"> Annuleringsverzekering</span><span>+ [PRIJS]</span></label>
+<label style="display: flex; gap: 10px; justify-content: space-between; border: 1px solid var(--border); border-radius: 12px; padding: 14px"><span style="display: flex; gap: 10px"><input type="checkbox"> Ruimtereisverzekering</span><span>+ [PRIJS]</span></label>
 </div>
 </section>
 
 <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px">
-<a href="/reis" style="border: 1px solid #C9D1E3; color: #16163F; text-decoration: none; padding: 14px 22px; border-radius: 10px; font-weight: 600">Terug</a>
-<a href="/boeken/gegevens" style="background: #5A3FD1; color: #FFFFFF; text-decoration: none; padding: 14px 22px; border-radius: 10px; font-weight: 600">Verder naar gegevens</a>
+<a href="/reis" style="border: 1px solid var(--border); color: var(--ink); text-decoration: none; padding: 14px 22px; border-radius: 10px; font-weight: 600">Terug</a>
+<a href="/boeken/gegevens" style="background: var(--brand); color: var(--white); text-decoration: none; padding: 14px 22px; border-radius: 10px; font-weight: 600">Verder naar gegevens</a>
 </div>
 </div>
 
-<aside aria-label="Jouw reis" style="flex: 1 1 320px; border: 1px solid #C9D1E3; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<aside aria-label="Jouw reis" style="flex: 1 1 320px; border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
 <h2 style="margin: 0; font-size: 18px">Jouw reis</h2>
-<div style="height: 120px; background: #EEF3FB; border-radius: 10px"></div>
+<div style="height: 120px; background: var(--surface); border-radius: 10px"></div>
 <p style="margin: 0; font-weight: 700">Mars Basecamp Expeditie</p>
-<p style="margin: 0; font-size: 14px; color: #55607A">[DATUM] · 7 dagen · 2 reizigers</p>
-<div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px; border-top: 1px solid #E3E7F0; padding-top: 12px">
+<p style="margin: 0; font-size: 14px; color: var(--muted)">[DATUM] · 7 dagen · 2 reizigers</p>
+<div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px; border-top: 1px solid var(--line); padding-top: 12px">
 <div style="display: flex; justify-content: space-between"><span>Basisreis × 2</span><span>[PRIJS]</span></div>
 <div style="display: flex; justify-content: space-between"><span>Reisvorm: @(_gekozen.Naam)</span><span>@(_gekozen.Prijs)</span></div>
 <div style="display: flex; justify-content: space-between"><span>Verblijf</span><span>inbegrepen</span></div>
 <div style="display: flex; justify-content: space-between"><span>Extra’s</span><span>[PRIJS]</span></div>
 </div>
-<div style="border-top: 1px solid #E3E7F0; padding-top: 12px; display: flex; justify-content: space-between; font-weight: 700; font-size: 18px"><span>Totaal</span><span>[TOTAAL]</span></div>
-<p style="margin: 0; font-size: 12px; color: #55607A">Prijs gegarandeerd tot [TIJDSTIP]</p>
-<button type="button" style="background: #FFFFFF; border: 1px solid #5A3FD1; color: #5A3FD1; padding: 12px; border-radius: 10px; font-weight: 600; font-family: inherit; font-size: 15px">Opslaan als offerte</button>
+<div style="border-top: 1px solid var(--line); padding-top: 12px; display: flex; justify-content: space-between; font-weight: 700; font-size: 18px"><span>Totaal</span><span>[TOTAAL]</span></div>
+<p style="margin: 0; font-size: 12px; color: var(--muted)">Prijs gegarandeerd tot [TIJDSTIP]</p>
 </aside>
 </main>
 
@@ -89,9 +88,9 @@
 
     private VormenItem _gekozen = Vormen[0];
 
-    private const string KaartStijl = "background: #FFFFFF; color: #16163F; text-align: left; font-family: inherit; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 6px; cursor: pointer; ";
+    private const string KaartStijl = "background: var(--white); color: var(--ink); text-align: left; font-family: inherit; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 6px; cursor: pointer; ";
 
     private string Stijl(VormenItem v) => KaartStijl + (v == _gekozen
-        ? "border: 2px solid #5A3FD1; box-shadow: 0 0 0 3px #E7DFFB"
-        : "border: 1px solid #C9D1E3");
+        ? "border: 2px solid var(--brand); box-shadow: 0 0 0 3px var(--brand-tint)"
+        : "border: 1px solid var(--border)");
 }
