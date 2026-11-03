@@ -1,0 +1,33 @@
+# Local dev database. Prod stack lives in docker-compose.yaml.
+#
+#   docker compose -f docker-compose.dev.yml up -d
+#   docker compose -f docker-compose.dev.yml down -v   # reset the database
+#
+# Credentials match appsettings.Development.json.
+services:
+  mariadb:
+    container_name: tui-dev-db
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: tui
+      MARIADB_USER: tui
+      MARIADB_PASSWORD: changeme
+      MARIADB_ROOT_PASSWORD: changeme
+      TZ: Europe/Amsterdam
+    ports:
+      # Bound to loopback only: the dev DB should not be reachable off-box.
+      - "127.0.0.1:3306:3306"
+    volumes:
+      # Named volume, not the prod /DATA bind mount. Keeps dev data out of the
+      # system path and makes `down -v` a clean reset.
+      - tui-dev-db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  tui-dev-db:

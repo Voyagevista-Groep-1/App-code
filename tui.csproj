@@ -7,6 +7,8 @@
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
     <AllowMissingPrunePackageData>true</AllowMissingPrunePackageData>
     <UserSecretsId>e06dae00-410e-4d69-b3fe-9451234a4103</UserSecretsId>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <ItemGroup>

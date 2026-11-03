@@ -1,3 +1,13 @@
 body { margin: 0 }
 a { color: #5A3FD1 }
 a:hover { color: #3F2A9E }
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+* {
+    font-family: 'Segoe UI', Arial, sans-serif;
+}

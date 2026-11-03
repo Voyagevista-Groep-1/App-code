@@ -19,7 +19,7 @@ services:
       retries: 3
 
   tui:
-    image: ghcr.io/Incorporated-Inc-Organization-Solutions/tui:latest
+    image: ghcr.io/incorporated-inc-organization-solutions/tui:main
     # build: .
     container_name: tui
     restart: unless-stopped

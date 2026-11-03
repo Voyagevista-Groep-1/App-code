@@ -1,0 +1,88 @@
+@page "/auth/login"
+@layout AuthLayout
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthStateProvider
+
+<PageTitle>Inloggen</PageTitle>
+
+<div class="main">
+    
+    @if (!string.IsNullOrWhiteSpace(Error))
+    {
+        <p class="error-message">@Error</p>
+    }
+
+    @if (Registered == "true")
+    {
+        <p class="success-message">Registratie geslaagd! Je kunt nu inloggen.</p>
+    }
+
+    <div class="login-container">
+
+        <div class="login-header">
+            <h3>Inloggen</h3>
+        </div>
+
+
+        <form method="post" action="/auth/login">
+            <AntiforgeryToken />
+            <input type="email" name="email" placeholder="E-mailadres" required />
+            <div class="password-input">
+                <input type="@(_showPassword ? "text" : "password")" name="password" placeholder="Wachtwoord" required />
+                <button type="button" class="password-toggle" @onclick="() => _showPassword = !_showPassword" aria-label="@(_showPassword ? "Wachtwoord verbergen" : "Wachtwoord tonen")" title="@(_showPassword ? "Wachtwoord verbergen" : "Wachtwoord tonen")">@( _showPassword ? "◉" : "◌" )</button>
+            </div>
+            <button type="submit">Inloggen</button>
+        </form>
+
+        <div class="register-link">
+            <p>Heb je nog geen account? <a href="/auth/register">Registreren</a></p>
+        </div>
+        
+    </div>
+
+  
+
+
+
+
+    
+
+    @if (_isLoggedIn)
+    {
+        <p class="success-message">Je bent ingelogd als <strong>@_firstName @_lastName</strong> (e-mailadres: @_email)</p>
+        <form method="post" action="/auth/logout">
+            <AntiforgeryToken />
+            <button type="submit">Uitloggen</button>
+        </form>
+    }
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "error")]
+    private string? Error { get; set; }
+
+    [SupplyParameterFromQuery(Name = "registered")]
+    private string? Registered { get; set; }
+
+    private bool _isLoggedIn;
+    private string? _firstName;
+    private string? _lastName;
+    private string? _email;
+    private bool _showPassword;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = state.User;
+
+        _isLoggedIn = user.Identity?.IsAuthenticated == true;
+
+        if (_isLoggedIn)
+        {
+            _firstName = user.FindFirstValue(ClaimTypes.GivenName);
+            _lastName = user.FindFirstValue(ClaimTypes.Surname);
+            _email = user.FindFirstValue(ClaimTypes.Email);
+        }
+    }
+}

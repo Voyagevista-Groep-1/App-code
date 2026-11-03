@@ -1,8 +1,3 @@
-Installeer dotnet ef
-```bash
-dotnet tool install --global dotnet-ef
-```
-
 ## Start het project
 ```bash
 dotnet watch
@@ -19,6 +14,11 @@ dotnet user-secrets set "Db:user" "root"
 ```
 
 ## Hoe maak je een migratie?
+### Installeer dotnet ef
+```bash
+dotnet tool install --global dotnet-ef
+```
+### Maak de migratie
 ```bash
 dotnet ef migrations add <naam>
 ```

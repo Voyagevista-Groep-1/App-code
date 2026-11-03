@@ -1,9 +1,59 @@
 @page "/admin"
-@layout MainLayout
+@layout AdminLayout
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Admin</PageTitle>
 
-<div class="main">
-    <h3>Home</h3>
-    <p>Hello, World! admin</p>
+<div class="dashboard">
+    <section class="dashboard-hero">
+        <div class="hero-content">
+            <h1><strong>VoyageVista</strong></h1>
+            <p>Bekijk hier het overzicht van vluchten, klanten, omzet en interplanetaire reisoperaties.</p>
+        </div>
+    </section>
+
+    <section class="dashboard-stats">
+        <article class="stat-card"><strong>Actieve boekingen</strong><span>Dashboard card</span></article>
+        <article class="stat-card"><strong>Klanten vandaag</strong><span>Dashboard card</span></article>
+        <article class="stat-card"><strong>Omzet</strong><span>Dashboard card</span></article>
+        <article class="stat-card"><strong>Vertrekken</strong><span>Dashboard card</span></article>
+    </section>
+
+    <section class="quick-actions">
+        <h2>SNELLE ACTIES</h2>
+        <div>
+            <button>Nieuwe boeking</button>
+            <button>Nieuwe campagne</button>
+            <button>Supportticket</button>
+            <button>Bestemming toevoegen</button>
+            <button>Rapport genereren</button>
+        </div>
+    </section>
+
+    <section class="dashboard-grid">
+        <article class="dashboard-card">
+            <h2>Populairste bestemmingen</h2>
+            <p>Hier komt later de bestemmingen-chart.</p>
+        </article>
+
+        <article class="dashboard-card">
+            <h2>Transportvormen</h2>
+            <p>Hier komt later de transportvormen-chart.</p>
+        </article>
+    </section>
+
+    <section class="dashboard-card revenue-card">
+        <h2>Omzet trend</h2>
+        <p>Hier komt later de omzet-lijngrafiek.</p>
+    </section>
+
+    <section class="trips-section">
+        <h2>AANKOMENDE REIZEN</h2>
+        <div class="trips-table">
+            <div class="trip-row trip-header"><span>Vlucht ID</span><span>Bestemming</span><span>Transport</span><span>Vertrekdatum</span><span>Status</span></div>
+            <div class="trip-row"><strong>TP-2887</strong><span>Venus</span><span>Teleportatie</span><span>24 Sep 2150</span><span>Vertraagd</span></div>
+            <div class="trip-row"><strong>RK-2891</strong><span>Mars</span><span>Raket</span><span>28 Sep 2150</span><span>Boarding open</span></div>
+            <div class="trip-row"><strong>CS-2892</strong><span>Saturnus</span><span>Cruiseschip</span><span>29 Sep 2150</span><span>In voorbereiding</span></div>
+        </div>
+    </section>
 </div>
