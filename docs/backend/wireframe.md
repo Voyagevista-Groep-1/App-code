@@ -1,6 +1,9 @@
 # Backend Wireframe
 
-## Create booking happyflow
+- Pages call one service method; services own the rules.
+- Every flow checks the client owns the booking/invoice/ticket.
+
+## Create booking
 
 ```mermaid
 sequenceDiagram
@@ -9,55 +12,36 @@ sequenceDiagram
   participant B as BookingService
   participant Pr as PricingService
   participant I as InvoiceService
-  C->>P: Create booking
-  P->>B: CreateBooking(...)
-  B->>Pr: QuoteTrip(...)
-  Pr-->>B: trip quote
-  B->>B: SaveBooking(...)
-  B->>I: CreateBookingInvoice(...)
-  I-->>B: invoice
+  C->>P: submit (offer, travellers)
+  P->>B: createBooking(...)
+  B->>Pr: quote(offer, travellers)
+  Pr-->>B: quote
+  B->>B: save booking (pending)
+  B->>I: createInvoices(booking)
   B-->>P: bookingId
-  P-->>C: redirect to booking
+  P-->>C: redirect
 ```
 
-## Take payment happyflow
+## Payment
 
 ```mermaid
 sequenceDiagram
   actor C as Client
-  participant E as /payment/new
+  participant E as /payments/new
   participant P as PaymentService
   participant I as InvoiceService
-  C->>E: Take payment (invoiceId, amount)
-  E->>P: TakePayment(...)
-  P->>I: GetInvoice(invoiceId)
-  I-->>P: invoice
-  P->>P: validate
-  P->>P: create payment
-  P->>I: MarkAsPaid(invoiceId)
-  I-->>P: updated invoice
+  participant B as BookingService
+  C->>E: pay (invoiceId)
+  E->>P: takePayment(clientId, invoiceId)
+  P->>I: getInvoice(invoiceId)
+  P->>P: validate (owner, invoice open), save payment (paid)
+  P->>I: markPaid(invoiceId)
+  P->>B: onInvoicePaid(bookingId)
   P-->>E: receipt
   E-->>C: confirmation
 ```
 
-## Ticket & SLA happyflow
-
-```mermaid
-sequenceDiagram
-  actor C as Client
-  participant P as /customerservice/tickets/new
-  participant T as TicketService
-  participant S as SlaService
-  C->>P: Submit complaint
-  P->>T: CreateTicket(...)
-  T->>S: ResolveSla(...)
-  S-->>T: sla and deadline
-  T->>T: SaveTicket(...)
-  T-->>P: ticketId
-  P-->>C: confirmation
-```
-
-## Cancel booking happyflow
+## Cancel booking
 
 ```mermaid
 sequenceDiagram
@@ -65,13 +49,33 @@ sequenceDiagram
   participant P as /bookings/{id}
   participant B as BookingService
   participant I as InvoiceService
-  C->>P: Cancel booking
-  P->>B: CancelBooking(bookingId, reason)
-  B->>I: GetInvoicesForBooking(bookingId)
-  I-->>B: invoices
-  B->>B: SaveCancellation(...)
-  B->>I: VoidInvoice(invoiceId)
-  I-->>B: invoice voided
-  B-->>P: confirmation
-  P-->>C: redirect to booking
+  participant Pay as PaymentService
+  C->>P: cancel (reason)
+  P->>B: cancelBooking(...)
+  B->>B: validate, calculate fee + refund
+  B->>B: save cancellation, status cancelled
+  B->>I: voidUnpaid(bookingId)
+  B->>I: createCreditNote(bookingId, refund)
+  B->>Pay: refund(bookingId, refund)
+  B-->>P: summary
+  P-->>C: redirect
+```
+
+Unpaid invoices are voided; paid amounts are refunded as a payment with status `refunded`.
+
+## Ticket & SLA
+
+```mermaid
+sequenceDiagram
+  actor C as Client
+  participant P as /customerservice/tickets/new
+  participant T as TicketService
+  participant S as SlaService
+  C->>P: submit (category, text, bookingId?)
+  P->>T: createTicket(...)
+  T->>S: resolveSla(category, bookingId)
+  S-->>T: deadline
+  T->>T: save ticket (open)
+  T-->>P: ticketId
+  P-->>C: confirmation
 ```
